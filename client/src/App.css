@@ -1,0 +1,31 @@
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-site {
+  padding: 3rem 0;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 5rem;
+}
+
+.footer-site p {
+  margin: 0;
+}
+
+/* Common utility for animate fade */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}

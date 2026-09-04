@@ -24,17 +24,54 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// CORS configuration
+// Dynamic CORS configuration supporting Netlify, custom domains, and local dev
+const allowedOrigins = process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL.split(',').map(url => url.trim().replace(/\/$/, ''))
+    : [];
+
 const corsOptions = {
-    origin: process.env.FRONTEND_URL || '*', // Allow specific frontend in production
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+
+        // Allow localhost development origins
+        if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+            return callback(null, true);
+        }
+
+        // Allow any *.netlify.app origin, explicitly configured FRONTEND_URL, or fallback
+        if (
+            origin.endsWith('.netlify.app') ||
+            allowedOrigins.includes(origin) ||
+            allowedOrigins.includes('*') ||
+            allowedOrigins.length === 0
+        ) {
+            return callback(null, true);
+        }
+
+        return callback(null, true);
+    },
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Health check and status endpoints for Render deployment & uptime monitoring
+app.get(['/', '/health', '/api/health'], (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        service: 'Chaudhary & Sons API',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -62,9 +99,13 @@ mongoose.connect(MONGODB_URI)
 // Create uploads directory if it doesn't exist
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 const IMAGES_DIR = path.join(UPLOADS_DIR, 'images');
+const CV_DIR = path.join(UPLOADS_DIR, 'CV');
 
 if (!existsSync(IMAGES_DIR)) {
     mkdirSync(IMAGES_DIR, { recursive: true });
+}
+if (!existsSync(CV_DIR)) {
+    mkdirSync(CV_DIR, { recursive: true });
 }
 
 // Serve static files from uploads folder
@@ -590,13 +631,18 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-    // Dynamic URL based on request host for better deployment compatibility
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const imageUrl = `${protocol}://${host}/uploads/images/${req.file.filename}`;
+    // Respect explicit SERVER_URL or construct from request proxy headers
+    const serverBase = process.env.SERVER_URL
+        ? process.env.SERVER_URL.replace(/\/$/, '')
+        : `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${serverBase}/uploads/images/${req.file.filename}`;
     res.json({ success: true, url: imageUrl });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`✅ Server successfully started and running on port ${PORT}`);
+    if (process.env.SERVER_URL) {
+        console.log(`🌐 Public API URL: ${process.env.SERVER_URL}`);
+    }
 });
+

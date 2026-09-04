@@ -5,9 +5,10 @@ const articleSchema = new mongoose.Schema({
     excerpt: { type: String, required: true },
     content: { type: String, required: true },
     author: { type: String, required: true },
+    authorEmail: { type: String, lowercase: true, trim: true },
     category: { type: String, required: true },
     date: { type: String, required: true },
-    status: { type: String, default: 'pending', enum: ['pending', 'approved'] }
+    status: { type: String, default: 'pending', enum: ['pending', 'approved', 'rejected'] }
 }, {
     timestamps: true,
     toJSON: {

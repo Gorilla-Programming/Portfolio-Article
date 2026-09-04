@@ -7,7 +7,8 @@ import { useAuth } from '../context/AuthContext';
 import {
     Send, Image as ImageIcon, Link as LinkIcon, Type, CheckCircle,
     Bold, Italic, Heading1, Heading2, Heading3, Loader2, Copy, Check,
-    List, ListOrdered, Quote, Code, Eye, FileEdit, Maximize2, Minimize2
+    List, ListOrdered, Quote, Code, Eye, FileEdit, Columns, Sparkles,
+    Tag, User, BookOpen
 } from 'lucide-react';
 import './Post.css';
 
@@ -40,8 +41,8 @@ const Post = () => {
         category: 'Development'
     });
 
-    const defaultCategories = ['Development', 'Design', 'AI', 'Tech', 'Maximo', 'Integration'];
-    const existingCategories = Array.from(new Set(articles.map(a => a.category)));
+    const defaultCategories = ['Development', 'IBM Maximo', 'Java & Spring', 'AI & Vision', 'Architecture', 'DevOps'];
+    const existingCategories = Array.from(new Set(articles.map(a => a.category).filter(Boolean)));
     const allCategories = Array.from(new Set([...defaultCategories, ...existingCategories])).sort();
 
     useEffect(() => {
@@ -89,7 +90,7 @@ const Post = () => {
             const data = await response.json();
             if (data.success) {
                 setLastUploadedUrl(data.url);
-                insertFormatting(`![${file.name}](${data.url})`);
+                insertFormatting(`\n![${file.name}](${data.url})\n`);
             } else {
                 alert('Upload failed: ' + data.message);
             }
@@ -108,6 +109,9 @@ const Post = () => {
         setTimeout(() => setCopySuccess(false), 2000);
     };
 
+    const wordCount = formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0;
+    const charCount = formData.content.length;
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const articleToSubmit = {
@@ -125,19 +129,19 @@ const Post = () => {
         setSubmitted(true);
         setTimeout(() => {
             setSubmitted(false);
-            setFormData({ title: '', excerpt: '', content: '', author: user ? `${user.firstName} ${user.lastName}` : '', category: 'Development' });
-            setIsCustomCategory(false);
-            setCustomCategory('');
-        }, 3000);
+            navigate('/articles');
+        }, 2200);
     };
 
     if (submitted) {
         return (
             <div className="post-container animate-fade-in success-state">
                 <div className="glass-card success-card">
-                    <CheckCircle size={64} color="var(--primary)" />
-                    <h2>Article Submitted!</h2>
-                    <p>Your article has been sent for approval. It will appear on the Articles page once reviewed.</p>
+                    <div className="success-icon-glow">
+                        <CheckCircle size={56} color="#10b981" />
+                    </div>
+                    <h2>Article Submitted Successfully!</h2>
+                    <p>Your contribution has been recorded. It will appear on the public hub upon admin review.</p>
                 </div>
             </div>
         );
@@ -145,36 +149,45 @@ const Post = () => {
 
     return (
         <div className="post-container animate-fade-in">
-            <header className="page-header">
-                <h1 className="page-title">Article <span>Editor</span></h1>
-                <p className="page-subtitle">Premium Markdown toolkit for professional writing.</p>
+            <header className="post-page-header">
+                <div className="badge-pill cyan">
+                    <Sparkles size={14} /> Markdown Writing Studio
+                </div>
+                <h1 className="page-title">
+                    Create New <span className="text-gradient-primary">Article</span>
+                </h1>
+                <p className="page-subtitle">
+                    Share your technical expertise with the developer community using our live Markdown editor.
+                </p>
             </header>
 
-            <div className="editor-main-layout">
+            <div className="editor-main-card glass-card">
                 <form onSubmit={handleSubmit} className="post-form">
+                    {/* Metadata Section */}
                     <div className="editor-meta-grid">
-                        <div className="editor-field-group glass">
-                            <label>Title</label>
+                        <div className="meta-field title-field">
+                            <label>Article Headline</label>
                             <input
                                 type="text"
-                                placeholder="Article Title"
+                                placeholder="e.g., Deep Dive into Maximo Integration Framework (MIF)..."
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 required
                             />
                         </div>
 
-                        <div className="form-row">
-                            <div className="editor-field-group glass">
-                                <label>Author</label>
+                        <div className="meta-row">
+                            <div className="meta-field">
+                                <label><User size={13} /> Author</label>
                                 <input
                                     type="text"
                                     value={formData.author}
                                     readOnly
+                                    className="read-only-input"
                                 />
                             </div>
-                            <div className="editor-field-group glass">
-                                <label>Category</label>
+                            <div className="meta-field">
+                                <label><Tag size={13} /> Category</label>
                                 <select
                                     value={isCustomCategory ? 'Others' : formData.category}
                                     onChange={(e) => {
@@ -190,16 +203,17 @@ const Post = () => {
                                     {allCategories.map(cat => (
                                         <option key={cat} value={cat}>{cat}</option>
                                     ))}
-                                    <option value="Others">Others...</option>
+                                    <option value="Others">+ Custom Category...</option>
                                 </select>
                             </div>
                         </div>
 
                         {isCustomCategory && (
-                            <div className="editor-field-group glass animate-fade-in">
+                            <div className="meta-field custom-cat-field animate-fade-in">
+                                <label>New Category Name</label>
                                 <input
                                     type="text"
-                                    placeholder="Enter New Category Name"
+                                    placeholder="Enter your custom topic..."
                                     value={customCategory}
                                     onChange={(e) => setCustomCategory(e.target.value)}
                                     required
@@ -208,10 +222,10 @@ const Post = () => {
                             </div>
                         )}
 
-                        <div className="editor-field-group glass">
-                            <label>Summary (Excerpt)</label>
+                        <div className="meta-field">
+                            <label>Card Summary / Excerpt</label>
                             <textarea
-                                placeholder="Brief summary to display on article cards..."
+                                placeholder="A concise 1-2 sentence overview to display on article cards and search results..."
                                 rows="2"
                                 value={formData.excerpt}
                                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
@@ -220,78 +234,101 @@ const Post = () => {
                         </div>
                     </div>
 
-                    <div className={`advanced-editor-container glass ${viewMode}`}>
-                        <div className="editor-toolbar-advanced">
-                            <div className="toolbar-section">
-                                <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('_', '_')} title="Italic"><Italic size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('> ')} title="Quote"><Quote size={18} /></button>
-                                <div className="toolbar-divider"></div>
-                                <button type="button" onClick={() => insertFormatting('# ')} title="H1"><Heading1 size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('## ')} title="H2"><Heading2 size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('### ')} title="H3"><Heading3 size={18} /></button>
-                                <div className="toolbar-divider"></div>
-                                <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={18} /></button>
-                                <div className="toolbar-divider"></div>
+                    {/* Markdown Studio Editor */}
+                    <div className={`studio-editor-box ${viewMode}`}>
+                        <div className="studio-toolbar">
+                            <div className="format-tools-group">
+                                <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('*', '*')} title="Italic"><Italic size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('> ')} title="Blockquote"><Quote size={16} /></button>
+                                <div className="toolbar-sep"></div>
+                                <button type="button" onClick={() => insertFormatting('# ')} title="Heading 1"><Heading1 size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('## ')} title="Heading 2"><Heading2 size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('### ')} title="Heading 3"><Heading3 size={16} /></button>
+                                <div className="toolbar-sep"></div>
+                                <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={16} /></button>
+                                <div className="toolbar-sep"></div>
                                 <button
                                     type="button"
-                                    onClick={() => fileInputRef.current.click()}
-                                    title="Upload Image"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    title="Upload & Insert Image"
                                     disabled={isUploading}
+                                    className="upload-trigger-btn"
                                 >
-                                    {isUploading ? <Loader2 size={18} className="animate-spin" /> : <ImageIcon size={18} />}
+                                    {isUploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                                    <span>{isUploading ? 'Uploading...' : 'Image'}</span>
                                 </button>
-                                <button type="button" onClick={() => insertFormatting('[', '](url)')} title="Link"><LinkIcon size={18} /></button>
+                                <button type="button" onClick={() => insertFormatting('[', '](https://)')} title="Insert Link"><LinkIcon size={16} /></button>
                             </div>
 
-                            <div className="toolbar-section view-controls">
+                            <div className="view-mode-group">
                                 <button
                                     type="button"
-                                    className={viewMode === 'write' ? 'active' : ''}
+                                    className={viewMode === 'write' ? 'mode-btn active' : 'mode-btn'}
                                     onClick={() => setViewMode('write')}
-                                    title="Write Mode"
+                                    title="Write Only"
                                 >
-                                    <FileEdit size={18} />
+                                    <FileEdit size={16} /> Write
                                 </button>
                                 <button
                                     type="button"
-                                    className={viewMode === 'split' ? 'active' : ''}
+                                    className={viewMode === 'split' ? 'mode-btn active' : 'mode-btn'}
                                     onClick={() => setViewMode('split')}
                                     title="Split View"
                                 >
-                                    <Maximize2 size={18} />
+                                    <Columns size={16} /> Split
                                 </button>
                                 <button
                                     type="button"
-                                    className={viewMode === 'preview' ? 'active' : ''}
+                                    className={viewMode === 'preview' ? 'mode-btn active' : 'mode-btn'}
                                     onClick={() => setViewMode('preview')}
-                                    title="Preview Mode"
+                                    title="Live Preview"
                                 >
-                                    <Eye size={18} />
+                                    <Eye size={16} /> Preview
                                 </button>
                             </div>
                         </div>
 
-                        <div className="editor-workspace">
+                        <div className="studio-canvas">
                             {(viewMode === 'write' || viewMode === 'split') && (
                                 <textarea
                                     ref={editorRef}
-                                    placeholder="Unleash your creativity..."
-                                    className="advanced-textarea"
+                                    placeholder="Write your article in Markdown format here..."
+                                    className="studio-textarea font-mono"
                                     value={formData.content}
                                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                     required
                                 ></textarea>
                             )}
+
                             {(viewMode === 'preview' || viewMode === 'split') && (
-                                <div className="advanced-preview markdown-content">
+                                <div className="studio-preview article-markdown-body">
                                     {formData.content ? (
                                         <ReactMarkdown>{formData.content}</ReactMarkdown>
                                     ) : (
-                                        <div className="preview-placeholder">Live preview will appear here...</div>
+                                        <div className="preview-empty-notice">
+                                            <BookOpen size={32} />
+                                            <span>Your live Markdown preview will render here...</span>
+                                        </div>
                                     )}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="studio-status-bar">
+                            <div className="counts-indicator font-mono">
+                                <span>{wordCount} words</span>
+                                <span className="dot-sep">•</span>
+                                <span>{charCount} characters</span>
+                            </div>
+                            {lastUploadedUrl && (
+                                <div className="last-upload-pill">
+                                    <span>Uploaded Image</span>
+                                    <button type="button" onClick={copyToClipboard} title="Copy URL">
+                                        {copySuccess ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+                                    </button>
                                 </div>
                             )}
                         </div>
@@ -305,17 +342,10 @@ const Post = () => {
                         />
                     </div>
 
-                    <div className="editor-footer">
-                        {lastUploadedUrl && (
-                            <div className="upload-notice glass animate-fade-in">
-                                <p>Successfully Uploaded: <span>{lastUploadedUrl}</span></p>
-                                <button type="button" onClick={copyToClipboard} className="icon-btn">
-                                    {copySuccess ? <Check size={16} color="#22c55e" /> : <Copy size={16} />}
-                                </button>
-                            </div>
-                        )}
-                        <button type="submit" className="publish-btn-advanced">
-                            Submit Article <Send size={18} />
+                    {/* Bottom Submit Row */}
+                    <div className="editor-submit-row">
+                        <button type="submit" className="btn-primary submit-article-btn">
+                            <Send size={18} /> Submit Article for Review
                         </button>
                     </div>
                 </form>

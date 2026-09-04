@@ -1,74 +1,249 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { Menu, X, Rocket, LogIn, LogOut, User, Sun, Moon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { 
+    X, BookOpen, PenTool, LayoutDashboard, Home, GraduationCap, 
+    FileText, ArrowUpRight, Truck, Layers, LogIn, LogOut, User, ShieldCheck
+} from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import './Navbar.css';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
-    const { theme, toggleTheme } = useTheme();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const menuRef = useRef(null);
+
+    // Close dropdown on route change
+    useEffect(() => {
+        setIsOpen(false);
+    }, [location]);
+
+    // Close dropdown on outside click (Desktop)
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 15) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleLogout = () => {
+        logout();
+        setIsOpen(false);
+        navigate('/');
+    };
 
     return (
-        <nav className="navbar glass">
-            <div className="container nav-container">
-                <NavLink to="/" className="logo">
-                    <Logo size={32} />
+        <header className={`zain-exact-header ${scrolled ? 'header-scrolled' : ''}`} ref={menuRef}>
+            <div className="zain-header-content">
+                {/* Left: Brand Logo */}
+                <NavLink to="/" className="zain-logo-link">
+                    <Logo />
                 </NavLink>
 
-                <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
-                    <li>
-                        <NavLink to="/" end onClick={() => setIsOpen(false)}>Home</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/articles" onClick={() => setIsOpen(false)}>Articles</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/post" onClick={() => setIsOpen(false)}>Post Article</NavLink>
-                    </li>
-
-                    {isAuthenticated && user?.role === 'admin' && (
-                        <li className="admin-link">
-                            <NavLink to="/admin" onClick={() => setIsOpen(false)}>Manage</NavLink>
-                        </li>
+                {/* Right: User Status + Hamburger + Contact Pill */}
+                <div className="zain-right-group">
+                    {/* Logged-in User Quick Pill */}
+                    {isAuthenticated && (
+                        <NavLink to="/profile" className="nav-user-pill" title="My Profile & Purchases">
+                            <span className="user-dot-online"></span>
+                            <span className="user-pill-name">
+                                {user?.firstName || user?.name || user?.username || 'User'}
+                            </span>
+                            {user?.role === 'admin' && (
+                                <span className="user-pill-admin-tag">Admin</span>
+                            )}
+                        </NavLink>
                     )}
 
-                    <li className="nav-controls">
-                        <button onClick={toggleTheme} className="theme-toggle-btn" title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
-                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                        </button>
-                    </li>
-
-                    <li className="auth-link">
-                        {isAuthenticated ? (
-                            <div className="user-nav-actions">
-                                <span className="user-greeting">
-                                    <User size={18} /> {user.firstName}
-                                </span>
-                                <button onClick={logout} className="logout-btn" title="Logout">
-                                    <LogOut size={20} />
-                                </button>
-                            </div>
+                    {/* Two-Bar Hamburger Button */}
+                    <button
+                        className={`zain-hamburger-two-bars ${isOpen ? 'active' : ''}`}
+                        onClick={() => setIsOpen(!isOpen)}
+                        aria-label="Toggle Navigation Menu"
+                    >
+                        {isOpen ? (
+                            <X size={22} className="close-x-icon" />
                         ) : (
-                            <NavLink to="/login" onClick={() => setIsOpen(false)} className="login-nav-btn">
-                                <LogIn size={18} /> Login
-                            </NavLink>
+                            <div className="two-lines-icon">
+                                <span className="line line-top"></span>
+                                <span className="line line-bottom"></span>
+                            </div>
                         )}
-                    </li>
-                </ul>
+                    </button>
 
-                <div className="mobile-actions">
-                    <button onClick={toggleTheme} className="theme-toggle-btn mobile-theme-btn">
-                        {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
-                    </button>
-                    <button className="mobile-menu-btn" onClick={() => setIsOpen(!isOpen)}>
-                        {isOpen ? <X size={28} /> : <Menu size={28} />}
-                    </button>
+                    {/* Solid White Pill Contact Button */}
+                    <a href="mailto:the.chaudhary.connect@gmail.com?subject=Enterprise%20Inquiry" className="zain-contact-white-pill">
+                        Contact
+                    </a>
                 </div>
             </div>
-        </nav>
+
+            {/* Navigation Menu (Dropdown on Desktop, Full Overlay on Mobile) */}
+            {isOpen && (
+                <div className="zain-nav-dropdown-menu animate-dropdown-pop">
+                    {/* Mobile Only: Top Bar with Logo & Close Button */}
+                    <div className="dropdown-mobile-topbar mobile-only">
+                        <NavLink to="/" onClick={() => setIsOpen(false)}>
+                            <Logo />
+                        </NavLink>
+                        <button
+                            className="mobile-close-btn"
+                            onClick={() => setIsOpen(false)}
+                            aria-label="Close Navigation"
+                        >
+                            <X size={22} />
+                        </button>
+                    </div>
+
+                    <div className="dropdown-menu-content">
+                        <ul className="dropdown-links-list">
+                            <li>
+                                <NavLink to="/" end onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><Home size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <span className="dropdown-item-title">Ankit Chaudhary</span>
+                                        <span className="dropdown-item-desc">Maximo EAM &amp; Architecture</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/anant-chaudhary" onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><Truck size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <span className="dropdown-item-title">Anant Chaudhary</span>
+                                        <span className="dropdown-item-desc">Supply Chain &amp; Logistics Leader</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/chaudhary-and-sons" onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><Layers size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <span className="dropdown-item-title">Chaudhary &amp; Sons</span>
+                                        <span className="dropdown-item-desc">Enterprise &amp; Holdings Hub</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/courses" onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><GraduationCap size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <div className="dropdown-title-row">
+                                            <span className="dropdown-item-title">ChaudharyConnect</span>
+                                            <span className="live-pill-tag">Live</span>
+                                        </div>
+                                        <span className="dropdown-item-desc">Live IBM Maximo Bootcamp</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/docs" onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><BookOpen size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <span className="dropdown-item-title">ChaudharyDocs</span>
+                                        <span className="dropdown-item-desc">Architecture &amp; Script Guides</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/articles" onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><FileText size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <span className="dropdown-item-title">ChaudharyArticles</span>
+                                        <span className="dropdown-item-desc">Technical Publications</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/post" onClick={() => setIsOpen(false)} className="dropdown-item-link">
+                                    <div className="dropdown-item-icon"><PenTool size={18} /></div>
+                                    <div className="dropdown-item-info">
+                                        <span className="dropdown-item-title">Write Article</span>
+                                        <span className="dropdown-item-desc">Submit to Knowledge Base</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+                        </ul>
+
+                        {/* Authentication & User Session Management */}
+                        <div className="dropdown-auth-card">
+                            {isAuthenticated ? (
+                                <div className="auth-profile-wrap">
+                                    <NavLink to="/profile" onClick={() => setIsOpen(false)} className="auth-user-header auth-user-header-link" title="Open My Profile">
+                                        <div className="auth-user-avatar">
+                                            <User size={18} />
+                                        </div>
+                                        <div className="auth-user-meta">
+                                            <div className="auth-user-name-line">
+                                                <span className="auth-user-name">
+                                                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.name || user?.username || 'Member')}
+                                                </span>
+                                                <span className={`auth-badge-tag ${user?.role === 'admin' ? 'admin' : 'member'}`}>
+                                                    {user?.role === 'admin' ? 'ADMIN' : 'MEMBER'}
+                                                </span>
+                                            </div>
+                                            <span className="auth-user-email">{user?.email || user?.username || ''}</span>
+                                        </div>
+                                    </NavLink>
+
+                                    <div className="auth-actions-row">
+                                        <NavLink to="/profile" onClick={() => setIsOpen(false)} className="auth-profile-nav-btn">
+                                            <User size={14} />
+                                            <span>My Profile &amp; Purchases</span>
+                                        </NavLink>
+                                        {user?.role === 'admin' && (
+                                            <NavLink to="/admin" onClick={() => setIsOpen(false)} className="auth-admin-btn">
+                                                <LayoutDashboard size={14} />
+                                                <span>Admin Panel</span>
+                                            </NavLink>
+                                        )}
+                                        <button onClick={handleLogout} className="auth-logout-btn">
+                                            <LogOut size={14} />
+                                            <span>Sign Out</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="auth-guest-wrap">
+                                    <NavLink to="/login" onClick={() => setIsOpen(false)} className="auth-signin-link">
+                                        <div className="auth-signin-icon">
+                                            <LogIn size={18} />
+                                        </div>
+                                        <div className="auth-signin-text">
+                                            <span className="auth-signin-title">Sign In / Register</span>
+                                            <span className="auth-signin-sub">Write articles &amp; manage account</span>
+                                        </div>
+                                        <ArrowUpRight size={16} className="auth-signin-arrow" />
+                                    </NavLink>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+        </header>
     );
 };
 

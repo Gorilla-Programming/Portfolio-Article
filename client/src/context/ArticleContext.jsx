@@ -41,14 +41,34 @@ export const ArticleProvider = ({ children }) => {
 
     const approveArticle = async (id) => {
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'approved' })
+            const response = await fetch(`${API_URL}/${id}/approve`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' }
             });
-            if (response.ok) fetchArticles();
+            if (response.ok) {
+                await fetchArticles();
+                return { success: true };
+            }
         } catch (error) {
             console.error('Error approving article:', error);
+            return { success: false, message: error.message };
+        }
+    };
+
+    const rejectArticle = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'rejected' })
+            });
+            if (response.ok) {
+                await fetchArticles();
+                return { success: true };
+            }
+        } catch (error) {
+            console.error('Error rejecting article:', error);
+            return { success: false, message: error.message };
         }
     };
 
@@ -77,7 +97,7 @@ export const ArticleProvider = ({ children }) => {
     };
 
     return (
-        <ArticleContext.Provider value={{ articles, loading, addArticle, approveArticle, updateArticle, deleteArticle }}>
+        <ArticleContext.Provider value={{ articles, loading, addArticle, approveArticle, rejectArticle, updateArticle, deleteArticle, refetchArticles: fetchArticles }}>
             {children}
         </ArticleContext.Provider>
     );

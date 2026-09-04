@@ -1,5 +1,5 @@
 import API_BASE_URL from '../config';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -29,9 +29,12 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('auth_user', JSON.stringify(data.user));
                 return { success: true, role: data.user.role };
             }
-            return { success: false, message: data.message };
+            if (data.requireOtp) {
+                return { success: false, requireOtp: true, email: data.email, message: data.message };
+            }
+            return { success: false, message: data.message || 'Invalid credentials' };
         } catch (error) {
-            return { success: false, message: 'Server error' };
+            return { success: false, message: 'Server connection error' };
         }
     };
 
@@ -44,15 +47,51 @@ export const AuthProvider = ({ children }) => {
             });
             const data = await response.json();
             if (data.success) {
-                setIsAuthenticated(true);
-                setUser(data.user);
-                localStorage.setItem('auth_token', 'true');
-                localStorage.setItem('auth_user', JSON.stringify(data.user));
-                return { success: true };
+                return {
+                    success: true,
+                    requireOtp: data.requireOtp,
+                    email: data.email,
+                    message: data.message
+                };
             }
             return { success: false, message: data.message };
         } catch (error) {
             return { success: false, message: 'Server error during signup' };
+        }
+    };
+
+    const verifyOtp = async (email, otp) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/verify-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            });
+            const data = await response.json();
+            if (data.success) {
+                setIsAuthenticated(true);
+                setUser(data.user);
+                localStorage.setItem('auth_token', 'true');
+                localStorage.setItem('auth_user', JSON.stringify(data.user));
+                return { success: true, role: data.user.role, message: data.message };
+            }
+            return { success: false, message: data.message || 'Invalid or expired OTP' };
+        } catch (error) {
+            return { success: false, message: 'Server error during OTP verification' };
+        }
+    };
+
+    const resendOtp = async (email) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/resend-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            return { success: false, message: 'Failed to resend OTP' };
         }
     };
 
@@ -64,7 +103,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, signup, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, login, signup, verifyOtp, resendOtp, logout }}>
             {children}
         </AuthContext.Provider>
     );

@@ -6,10 +6,19 @@ import multer from 'multer';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import dns from 'dns';
+import bcrypt from 'bcryptjs';
 import Article from './models/Article.js';
 import User from './models/User.js';
+import Enquiry from './models/Enquiry.js';
+import { sendOTPEmail } from './utils/emailService.js';
 
 dotenv.config();
+
+// Ensure reliable Atlas DNS resolution
+try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,15 +85,40 @@ const upload = multer({ storage: storage });
 
 // Routes
 
-// Signup
+// Signup (Initiates OTP Verification)
 app.post('/api/signup', async (req, res) => {
     const { firstName, lastName, email, password, phone } = req.body;
 
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ success: false, message: 'Email already exists' });
+            if (existingUser.isVerified) {
+                return res.status(400).json({ success: false, message: 'An account with this email already exists. Please sign in.' });
+            } else {
+                // If user registered earlier but never verified OTP, generate a fresh OTP and resend
+                const otp = Math.floor(100000 + Math.random() * 900000).toString();
+                existingUser.otp = otp;
+                existingUser.otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+                if (firstName) existingUser.firstName = firstName;
+                if (lastName) existingUser.lastName = lastName;
+                if (password) existingUser.password = password;
+                if (phone) existingUser.phone = phone;
+                await existingUser.save();
+
+                await sendOTPEmail(email, otp, firstName || existingUser.firstName);
+
+                return res.status(200).json({
+                    success: true,
+                    requireOtp: true,
+                    email: existingUser.email,
+                    message: 'Account exists but is unverified. A fresh 6-digit OTP has been sent to your email.'
+                });
+            }
         }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
         const newUser = await User.create({
             firstName,
@@ -92,16 +126,92 @@ app.post('/api/signup', async (req, res) => {
             email,
             password,
             phone,
-            role: 'user'
+            role: 'user',
+            isVerified: false,
+            otp,
+            otpExpiry
         });
+
+        await sendOTPEmail(email, otp, firstName);
 
         res.status(201).json({
             success: true,
-            user: { firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email, role: 'user' }
+            requireOtp: true,
+            email: newUser.email,
+            message: 'Registration initiated! Please enter the 6-digit OTP sent to your email.'
         });
     } catch (error) {
         console.error('Signup error:', error);
         res.status(500).json({ success: false, message: 'Server error during signup', error: error.message });
+    }
+});
+
+// Verify OTP
+app.post('/api/verify-otp', async (req, res) => {
+    const { email, otp } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found. Please register first.' });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({ success: false, message: 'Account is already verified. Please sign in.' });
+        }
+
+        if (user.otp !== otp || (user.otpExpiry && user.otpExpiry < Date.now())) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired OTP code. Please try again or resend OTP.' });
+        }
+
+        // Mark user as verified
+        user.isVerified = true;
+        user.otp = undefined;
+        user.otpExpiry = undefined;
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Email successfully verified! Welcome aboard.',
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        res.status(500).json({ success: false, message: 'Server error during OTP verification', error: error.message });
+    }
+});
+
+// Resend OTP
+app.post('/api/resend-otp', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({ success: false, message: 'Account is already verified.' });
+        }
+
+        // Generate a new 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        user.otp = otp;
+        user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save();
+
+        await sendOTPEmail(email, otp, user.firstName);
+
+        res.json({ success: true, message: 'A fresh 6-digit OTP has been sent to your email.' });
+    } catch (error) {
+        console.error('Resend OTP error:', error);
+        res.status(500).json({ success: false, message: 'Server error during OTP resend', error: error.message });
     }
 });
 
@@ -117,7 +227,24 @@ app.post('/api/login', async (req, res) => {
             ]
         });
 
-        if (user && user.password === password) {
+        if (user && (await user.matchPassword(password))) {
+            // Check if user account is verified (admin accounts or verified users)
+            if (user.role !== 'admin' && user.isVerified === false) {
+                // Generate and send new OTP
+                const otp = Math.floor(100000 + Math.random() * 900000).toString();
+                user.otp = otp;
+                user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+                await user.save();
+                await sendOTPEmail(user.email, otp, user.firstName);
+
+                return res.status(401).json({
+                    success: false,
+                    requireOtp: true,
+                    email: user.email,
+                    message: 'Your account is not verified yet. A new OTP has been sent to your email.'
+                });
+            }
+
             return res.json({
                 success: true,
                 user: {
@@ -129,7 +256,7 @@ app.post('/api/login', async (req, res) => {
             });
         }
 
-        res.status(401).json({ success: false, message: 'Invalid credentials' });
+        res.status(401).json({ success: false, message: 'Invalid username/email or password' });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
@@ -171,6 +298,45 @@ app.put('/api/articles/:id', async (req, res) => {
         res.json({ message: 'Article updated' });
     } catch (error) {
         res.status(500).json({ message: 'Error updating article' });
+    }
+});
+
+// Approve Article (Admin Action)
+app.patch('/api/articles/:id/approve', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: 'Invalid article ID' });
+        }
+        const updatedArticle = await Article.findByIdAndUpdate(
+            id, 
+            { status: 'approved' }, 
+            { new: true }
+        );
+        if (!updatedArticle) {
+            return res.status(404).json({ success: false, message: 'Article not found' });
+        }
+        res.json({ success: true, message: 'Article successfully approved and published!', article: updatedArticle });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error approving article', error: error.message });
+    }
+});
+
+// Update Article Status (Admin Action: approve / reject / pending)
+app.patch('/api/articles/:id/status', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ success: false, message: 'Invalid status. Must be pending, approved, or rejected.' });
+    }
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: 'Invalid article ID' });
+        }
+        const updatedArticle = await Article.findByIdAndUpdate(id, { status }, { new: true });
+        res.json({ success: true, message: `Article status updated to ${status}`, article: updatedArticle });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error updating article status', error: error.message });
     }
 });
 
@@ -221,10 +387,15 @@ app.post('/api/users', async (req, res) => {
 app.put('/api/users/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = { ...req.body };
-    if (!updateData.password) delete updateData.password;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: 'Invalid user ID' });
+        }
+        if (updateData.password && updateData.password.trim()) {
+            const salt = await bcrypt.genSalt(10);
+            updateData.password = await bcrypt.hash(updateData.password, salt);
+        } else {
+            delete updateData.password;
         }
         const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
         res.json(updatedUser);
@@ -244,6 +415,173 @@ app.delete('/api/users/:id', async (req, res) => {
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
+});
+
+// ==========================================
+// USER SELF-SERVICE PROFILE & ACTIVITY ROUTES
+// ==========================================
+
+// Get Current User Profile, Submitted Articles, and Purchases
+app.get('/api/user/profile', async (req, res) => {
+    const { email } = req.query;
+    if (!email) {
+        return res.status(400).json({ success: false, message: 'User email is required' });
+    }
+
+    try {
+        const user = await User.findOne({ email }).select('-password -otp -otpExpiry');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Fetch articles submitted by this user (by authorEmail or author name)
+        const userArticles = await Article.find({
+            $or: [
+                { authorEmail: user.email },
+                { author: `${user.firstName || ''} ${user.lastName || ''}`.trim() }
+            ]
+        }).sort({ createdAt: -1 });
+
+        // Fetch purchases / enrolled courses (from Enquiries collection)
+        const userPurchases = await Enquiry.find({ email: user.email }).sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            user,
+            articles: userArticles,
+            purchases: userPurchases,
+            stats: {
+                totalArticles: userArticles.length,
+                publishedArticles: userArticles.filter(a => a.status === 'approved').length,
+                pendingArticles: userArticles.filter(a => a.status === 'pending').length,
+                totalPurchases: userPurchases.length
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ success: false, message: 'Error loading user profile', error: error.message });
+    }
+});
+
+// Update User Profile Information
+app.put('/api/user/profile', async (req, res) => {
+    const { email, firstName, lastName, phone, designation, bio, socialLinks } = req.body;
+    if (!email) {
+        return res.status(400).json({ success: false, message: 'User email is required' });
+    }
+
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { email },
+            { 
+                firstName, 
+                lastName, 
+                phone, 
+                designation, 
+                bio, 
+                socialLinks: socialLinks || {} 
+            },
+            { new: true }
+        ).select('-password -otp -otpExpiry');
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.json({ success: true, message: 'Profile updated successfully!', user: updatedUser });
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ success: false, message: 'Error updating profile', error: error.message });
+    }
+});
+
+// Change User Password
+app.put('/api/user/change-password', async (req, res) => {
+    const { email, currentPassword, newPassword } = req.body;
+    if (!email || !currentPassword || !newPassword) {
+        return res.status(400).json({ success: false, message: 'All password fields are required' });
+    }
+
+    if (newPassword.length < 6) {
+        return res.status(400).json({ success: false, message: 'New password must be at least 6 characters long' });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const isMatch = await user.matchPassword(currentPassword);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+        }
+
+        user.password = newPassword;
+        await user.save(); // Pre-save hook hashes with bcrypt automatically
+
+        res.json({ success: true, message: 'Password changed successfully! Please use your new password next time.' });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        res.status(500).json({ success: false, message: 'Error changing password', error: error.message });
+    }
+});
+
+// Course Enquiry Routes
+app.post('/api/enquiries', async (req, res) => {
+    try {
+        const { name, email, phone, selectedItem, itemType, message } = req.body;
+        if (!name || !email || !selectedItem) {
+            return res.status(400).json({ success: false, message: 'Name, email, and course selection are required.' });
+        }
+        const newEnquiry = await Enquiry.create({
+            name,
+            email,
+            phone,
+            selectedItem,
+            itemType: itemType || 'module',
+            message
+        });
+        res.status(201).json({ success: true, enquiry: newEnquiry, message: 'Enquiry submitted successfully!' });
+    } catch (error) {
+        console.error('Enquiry submission error:', error);
+        res.status(500).json({ success: false, message: 'Server error while submitting enquiry.' });
+    }
+});
+
+app.get('/api/enquiries', async (req, res) => {
+    try {
+        const enquiries = await Enquiry.find().sort({ createdAt: -1 });
+        res.json(enquiries);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching enquiries' });
+    }
+});
+
+app.put('/api/enquiries/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid enquiry ID' });
+        }
+        const updated = await Enquiry.findByIdAndUpdate(id, req.body, { new: true });
+        res.json(updated);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating enquiry' });
+    }
+});
+
+app.delete('/api/enquiries/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid enquiry ID' });
+        }
+        await Enquiry.findByIdAndDelete(id);
+        res.json({ message: 'Enquiry deleted' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting enquiry' });
     }
 });
 

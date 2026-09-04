@@ -7,7 +7,8 @@ import { useAuth } from '../context/AuthContext';
 import {
     Save, Image as ImageIcon, Link as LinkIcon, Type, CheckCircle,
     Bold, Italic, Heading1, Heading2, Heading3, ChevronLeft, Loader2, Copy, Check,
-    List, ListOrdered, Quote, Code, Eye, FileEdit, Maximize2, Minimize2
+    List, ListOrdered, Quote, Code, Eye, FileEdit, Columns, Sparkles,
+    Tag, User, BookOpen
 } from 'lucide-react';
 import './Post.css';
 
@@ -33,8 +34,8 @@ const EditArticle = () => {
         category: 'Development'
     });
 
-    const defaultCategories = ['Development', 'Design', 'AI', 'Tech', 'Maximo', 'Integration'];
-    const existingCategories = Array.from(new Set(articles.map(a => a.category)));
+    const defaultCategories = ['Development', 'IBM Maximo', 'Java & Spring', 'AI & Vision', 'Architecture', 'DevOps'];
+    const existingCategories = Array.from(new Set(articles.map(a => a.category).filter(Boolean)));
     const allCategories = Array.from(new Set([...defaultCategories, ...existingCategories])).sort();
 
     useEffect(() => {
@@ -46,14 +47,14 @@ const EditArticle = () => {
     }, [isAuthenticated, user, navigate]);
 
     useEffect(() => {
-        const article = articles.find(art => String(art.id) === String(id));
+        const article = articles.find(art => String(art.id || art._id) === String(id));
         if (article) {
             setFormData({
-                title: article.title,
-                excerpt: article.excerpt,
-                content: article.content,
-                author: article.author,
-                category: article.category
+                title: article.title || '',
+                excerpt: article.excerpt || '',
+                content: article.content || '',
+                author: article.author || '',
+                category: article.category || 'Development'
             });
             if (!defaultCategories.includes(article.category)) {
                 setIsCustomCategory(true);
@@ -99,7 +100,7 @@ const EditArticle = () => {
             const data = await response.json();
             if (data.success) {
                 setLastUploadedUrl(data.url);
-                insertFormatting(`![${file.name}](${data.url})`);
+                insertFormatting(`\n![${file.name}](${data.url})\n`);
             } else {
                 alert('Upload failed: ' + data.message);
             }
@@ -118,6 +119,9 @@ const EditArticle = () => {
         setTimeout(() => setCopySuccess(false), 2000);
     };
 
+    const wordCount = formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0;
+    const charCount = formData.content.length;
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const articleToSubmit = {
@@ -135,16 +139,18 @@ const EditArticle = () => {
         setTimeout(() => {
             setSubmitted(false);
             navigate('/admin');
-        }, 2000);
+        }, 1800);
     };
 
     if (submitted) {
         return (
             <div className="post-container animate-fade-in success-state">
                 <div className="glass-card success-card">
-                    <CheckCircle size={64} color="var(--primary)" />
-                    <h2>Changes Saved!</h2>
-                    <p>Redirecting you back to the manage dashboard...</p>
+                    <div className="success-icon-glow">
+                        <CheckCircle size={56} color="#10b981" />
+                    </div>
+                    <h2>Changes Saved Successfully!</h2>
+                    <p>Redirecting you back to the admin manage dashboard...</p>
                 </div>
             </div>
         );
@@ -152,20 +158,29 @@ const EditArticle = () => {
 
     return (
         <div className="post-container animate-fade-in">
-            <button onClick={() => navigate('/admin')} className="back-link" style={{ background: 'none', border: 'none', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                <ChevronLeft size={20} /> Back to Manage
-            </button>
+            <div className="article-top-nav">
+                <button onClick={() => navigate('/admin')} className="back-link-btn">
+                    <ChevronLeft size={18} /> Back to Dashboard
+                </button>
+            </div>
 
-            <header className="page-header">
-                <h1 className="page-title">Article <span>Editor</span></h1>
-                <p className="page-subtitle">Refining your content with precision.</p>
+            <header className="post-page-header">
+                <div className="badge-pill cyan">
+                    <Sparkles size={14} /> Content Management Suite
+                </div>
+                <h1 className="page-title">
+                    Edit <span className="text-gradient-primary">Article</span>
+                </h1>
+                <p className="page-subtitle">
+                    Refine article copy, update category tags, and preview live formatting.
+                </p>
             </header>
 
-            <div className="editor-main-layout">
+            <div className="editor-main-card glass-card">
                 <form onSubmit={handleSubmit} className="post-form">
                     <div className="editor-meta-grid">
-                        <div className="editor-field-group glass">
-                            <label>Title</label>
+                        <div className="meta-field title-field">
+                            <label>Article Headline</label>
                             <input
                                 type="text"
                                 placeholder="Article Title"
@@ -175,17 +190,18 @@ const EditArticle = () => {
                             />
                         </div>
 
-                        <div className="form-row">
-                            <div className="editor-field-group glass">
-                                <label>Author</label>
+                        <div className="meta-row">
+                            <div className="meta-field">
+                                <label><User size={13} /> Author</label>
                                 <input
                                     type="text"
                                     value={formData.author}
                                     readOnly
+                                    className="read-only-input"
                                 />
                             </div>
-                            <div className="editor-field-group glass">
-                                <label>Category</label>
+                            <div className="meta-field">
+                                <label><Tag size={13} /> Category</label>
                                 <select
                                     value={isCustomCategory ? 'Others' : formData.category}
                                     onChange={(e) => {
@@ -201,16 +217,17 @@ const EditArticle = () => {
                                     {allCategories.map(cat => (
                                         <option key={cat} value={cat}>{cat}</option>
                                     ))}
-                                    <option value="Others">Others...</option>
+                                    <option value="Others">+ Custom Category...</option>
                                 </select>
                             </div>
                         </div>
 
                         {isCustomCategory && (
-                            <div className="editor-field-group glass animate-fade-in">
+                            <div className="meta-field custom-cat-field animate-fade-in">
+                                <label>New Category Name</label>
                                 <input
                                     type="text"
-                                    placeholder="Enter New Category Name"
+                                    placeholder="Enter custom topic..."
                                     value={customCategory}
                                     onChange={(e) => setCustomCategory(e.target.value)}
                                     required
@@ -219,8 +236,8 @@ const EditArticle = () => {
                             </div>
                         )}
 
-                        <div className="editor-field-group glass">
-                            <label>Summary (Excerpt)</label>
+                        <div className="meta-field">
+                            <label>Card Summary / Excerpt</label>
                             <textarea
                                 placeholder="Brief summary to display on article cards..."
                                 rows="2"
@@ -231,78 +248,101 @@ const EditArticle = () => {
                         </div>
                     </div>
 
-                    <div className={`advanced-editor-container glass ${viewMode}`}>
-                        <div className="editor-toolbar-advanced">
-                            <div className="toolbar-section">
-                                <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('_', '_')} title="Italic"><Italic size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('> ')} title="Quote"><Quote size={18} /></button>
-                                <div className="toolbar-divider"></div>
-                                <button type="button" onClick={() => insertFormatting('# ')} title="H1"><Heading1 size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('## ')} title="H2"><Heading2 size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('### ')} title="H3"><Heading3 size={18} /></button>
-                                <div className="toolbar-divider"></div>
-                                <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={18} /></button>
-                                <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={18} /></button>
-                                <div className="toolbar-divider"></div>
+                    {/* Markdown Studio Editor */}
+                    <div className={`studio-editor-box ${viewMode}`}>
+                        <div className="studio-toolbar">
+                            <div className="format-tools-group">
+                                <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('*', '*')} title="Italic"><Italic size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('> ')} title="Blockquote"><Quote size={16} /></button>
+                                <div className="toolbar-sep"></div>
+                                <button type="button" onClick={() => insertFormatting('# ')} title="Heading 1"><Heading1 size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('## ')} title="Heading 2"><Heading2 size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('### ')} title="Heading 3"><Heading3 size={16} /></button>
+                                <div className="toolbar-sep"></div>
+                                <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={16} /></button>
+                                <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={16} /></button>
+                                <div className="toolbar-sep"></div>
                                 <button
                                     type="button"
-                                    onClick={() => fileInputRef.current.click()}
-                                    title="Upload Image"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    title="Upload & Insert Image"
                                     disabled={isUploading}
+                                    className="upload-trigger-btn"
                                 >
-                                    {isUploading ? <Loader2 size={18} className="animate-spin" /> : <ImageIcon size={18} />}
+                                    {isUploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                                    <span>{isUploading ? 'Uploading...' : 'Image'}</span>
                                 </button>
-                                <button type="button" onClick={() => insertFormatting('[', '](url)')} title="Link"><LinkIcon size={18} /></button>
+                                <button type="button" onClick={() => insertFormatting('[', '](https://)')} title="Insert Link"><LinkIcon size={16} /></button>
                             </div>
 
-                            <div className="toolbar-section view-controls">
+                            <div className="view-mode-group">
                                 <button
                                     type="button"
-                                    className={viewMode === 'write' ? 'active' : ''}
+                                    className={viewMode === 'write' ? 'mode-btn active' : 'mode-btn'}
                                     onClick={() => setViewMode('write')}
-                                    title="Write Mode"
+                                    title="Write Only"
                                 >
-                                    <FileEdit size={18} />
+                                    <FileEdit size={16} /> Write
                                 </button>
                                 <button
                                     type="button"
-                                    className={viewMode === 'split' ? 'active' : ''}
+                                    className={viewMode === 'split' ? 'mode-btn active' : 'mode-btn'}
                                     onClick={() => setViewMode('split')}
                                     title="Split View"
                                 >
-                                    <Maximize2 size={18} />
+                                    <Columns size={16} /> Split
                                 </button>
                                 <button
                                     type="button"
-                                    className={viewMode === 'preview' ? 'active' : ''}
+                                    className={viewMode === 'preview' ? 'mode-btn active' : 'mode-btn'}
                                     onClick={() => setViewMode('preview')}
-                                    title="Preview Mode"
+                                    title="Live Preview"
                                 >
-                                    <Eye size={18} />
+                                    <Eye size={16} /> Preview
                                 </button>
                             </div>
                         </div>
 
-                        <div className="editor-workspace">
+                        <div className="studio-canvas">
                             {(viewMode === 'write' || viewMode === 'split') && (
                                 <textarea
                                     ref={editorRef}
-                                    placeholder="Unleash your creativity..."
-                                    className="advanced-textarea"
+                                    placeholder="Write your article in Markdown format..."
+                                    className="studio-textarea font-mono"
                                     value={formData.content}
                                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                     required
                                 ></textarea>
                             )}
+
                             {(viewMode === 'preview' || viewMode === 'split') && (
-                                <div className="advanced-preview markdown-content">
+                                <div className="studio-preview article-markdown-body">
                                     {formData.content ? (
                                         <ReactMarkdown>{formData.content}</ReactMarkdown>
                                     ) : (
-                                        <div className="preview-placeholder">Live preview will appear here...</div>
+                                        <div className="preview-empty-notice">
+                                            <BookOpen size={32} />
+                                            <span>Live preview will appear here...</span>
+                                        </div>
                                     )}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="studio-status-bar">
+                            <div className="counts-indicator font-mono">
+                                <span>{wordCount} words</span>
+                                <span className="dot-sep">•</span>
+                                <span>{charCount} characters</span>
+                            </div>
+                            {lastUploadedUrl && (
+                                <div className="last-upload-pill">
+                                    <span>Uploaded Image</span>
+                                    <button type="button" onClick={copyToClipboard} title="Copy URL">
+                                        {copySuccess ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+                                    </button>
                                 </div>
                             )}
                         </div>
@@ -316,17 +356,9 @@ const EditArticle = () => {
                         />
                     </div>
 
-                    <div className="editor-footer">
-                        {lastUploadedUrl && (
-                            <div className="upload-notice glass animate-fade-in">
-                                <p>Successfully Uploaded: <span>{lastUploadedUrl}</span></p>
-                                <button type="button" onClick={copyToClipboard} className="icon-btn">
-                                    {copySuccess ? <Check size={16} color="#22c55e" /> : <Copy size={16} />}
-                                </button>
-                            </div>
-                        )}
-                        <button type="submit" className="publish-btn-advanced">
-                            Update Article <Save size={18} />
+                    <div className="editor-submit-row">
+                        <button type="submit" className="btn-primary submit-article-btn">
+                            <Save size={18} /> Update Article
                         </button>
                     </div>
                 </form>

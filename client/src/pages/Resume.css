@@ -1,0 +1,389 @@
+.resume-page-wrapper {
+    padding-top: 2.5rem;
+    padding-bottom: 5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* Floating Controls Bar */
+.resume-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-full);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-sm);
+}
+
+.control-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--border-radius-full);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    transition: var(--transition);
+}
+
+.control-btn:hover {
+    color: var(--text-main);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.control-right-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.print-btn:hover {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.download-btn {
+    padding: 0.55rem 1.25rem;
+}
+
+/* Resume Paper Sheet Container */
+.resume-paper-container {
+    padding: 3.5rem;
+    border-radius: var(--border-radius-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-hover);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Header */
+.resume-header {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 2rem;
+    padding-bottom: 2.25rem;
+    border-bottom: 2px solid var(--border-subtle);
+    margin-bottom: 2.5rem;
+}
+
+.resume-name {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    color: var(--text-main);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+}
+
+.resume-role {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+}
+
+.resume-tagline {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.resume-contact-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.contact-link:hover {
+    color: var(--primary-light);
+}
+
+.contact-icon {
+    color: var(--accent-cyan);
+    flex-shrink: 0;
+}
+
+/* Grid Body */
+.resume-grid-body {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr;
+    gap: 3rem;
+}
+
+.resume-section {
+    margin-bottom: 2.25rem;
+}
+
+.section-title-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    color: var(--text-main);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+}
+
+.title-icon {
+    color: var(--primary-light);
+}
+
+.section-text-paragraphs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.section-text {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+}
+
+.section-text strong {
+    color: var(--text-main);
+}
+
+/* Experience Entries */
+.experience-entry {
+    margin-bottom: 1.5rem;
+}
+
+.entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.entry-role {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.entry-company {
+    font-size: 0.92rem;
+    color: var(--primary-light);
+    font-weight: 600;
+}
+
+.entry-period {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--border-radius-full);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.entry-bullets {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    list-style: disc;
+}
+
+.entry-bullets li {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+.entry-bullets strong {
+    color: var(--text-main);
+}
+
+/* Projects */
+.project-entry {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--border-subtle);
+}
+
+.project-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.tech-badge {
+    font-size: 0.75rem;
+    color: var(--primary-light);
+    font-weight: 600;
+    background: var(--bg-glass);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+}
+
+.entry-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+/* Right Column Skills */
+.skill-group {
+    margin-bottom: 1.25rem;
+}
+
+.skill-group-title {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-subtle);
+    margin-bottom: 0.5rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.skill-tags span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+}
+
+/* Education */
+.edu-degree {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.edu-field {
+    font-size: 0.88rem;
+    color: var(--primary-light);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.edu-note {
+    font-size: 0.8rem;
+    color: var(--text-subtle);
+}
+
+/* Highlights List */
+.highlights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.highlights-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.highlights-list li::before {
+    content: "•";
+    color: var(--accent-emerald);
+    font-weight: bold;
+}
+
+/* Responsiveness */
+@media (max-width: 800px) {
+    .resume-header {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .resume-grid-body {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .resume-paper-container {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* PRINT-FRIENDLY CSS */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #111827 !important;
+        font-size: 11pt;
+    }
+
+    .no-print, .navbar-wrapper, .footer-site {
+        display: none !important;
+    }
+
+    .resume-page-wrapper {
+        padding: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .resume-paper-container {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    .resume-name {
+        color: #000000 !important;
+    }
+
+    .resume-role, .entry-company, .edu-field, .title-icon {
+        color: #2563eb !important;
+        -webkit-text-fill-color: initial !important;
+    }
+
+    .resume-tagline, .section-text, .entry-bullets li, .entry-desc {
+        color: #374151 !important;
+    }
+
+    .resume-contact-col a, .resume-contact-col span {
+        color: #4b5563 !important;
+    }
+
+    .skill-tags span {
+        background: #f3f4f6 !important;
+        color: #111827 !important;
+        border: 1px solid #e5e7eb !important;
+    }
+
+    .entry-period {
+        background: #eff6ff !important;
+        color: #1d4ed8 !important;
+        border: 1px solid #bfdbfe !important;
+    }
+}

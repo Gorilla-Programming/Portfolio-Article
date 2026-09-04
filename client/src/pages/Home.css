@@ -1707,7 +1707,7 @@
 
 @media (max-width: 768px) {
     .cyber-hero-section {
-        padding: 96px 16px 40px 16px;
+        padding: 90px 14px 36px 14px;
     }
 
     .hero-content-cluster {
@@ -1715,8 +1715,8 @@
     }
 
     .hero-status-pill {
-        padding: 6px 12px;
-        font-size: 0.72rem;
+        padding: 5px 12px;
+        font-size: 0.68rem;
         gap: 6px;
         flex-wrap: wrap;
         justify-content: center;
@@ -1725,35 +1725,36 @@
     }
 
     .hero-brand-subtitle {
-        gap: 12px;
-        margin-bottom: 8px;
+        gap: 10px;
+        margin-bottom: 6px;
     }
 
     .brand-title-text {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         letter-spacing: 0.14em;
     }
 
     .brand-flank-line {
-        width: 32px;
+        width: 24px;
     }
 
     .hero-display-giant-title {
-        font-size: clamp(2.4rem, 11vw, 4.4rem);
-        line-height: 0.95;
-        margin-bottom: 16px;
+        font-size: clamp(2.4rem, 11vw, 4.2rem);
+        line-height: 0.96;
+        margin-bottom: 14px;
     }
 
     .hero-dynamic-role-container {
-        font-size: 0.88rem;
-        padding: 6px 14px;
+        font-size: 0.84rem;
+        padding: 6px 12px;
         min-height: 42px;
         max-width: 100%;
         text-align: center;
+        justify-content: center;
     }
 
     .hero-content-shell {
-        padding: 0 16px;
+        padding: 0 12px;
         width: 100%;
         box-sizing: border-box;
     }
@@ -1761,7 +1762,7 @@
     .hero-narrative-card {
         padding: 16px 14px;
         border-radius: 16px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         width: 100%;
         box-sizing: border-box;
     }
@@ -1811,139 +1812,240 @@
         overflow-wrap: anywhere;
     }
 
-
     .hero-actions-row,
     .hero-cta-button-cluster {
         flex-direction: column;
         width: 100%;
-        gap: 12px;
-        margin-top: 20px;
-        margin-bottom: 30px;
+        gap: 10px;
+        margin-top: 16px;
+        margin-bottom: 24px;
     }
 
     .hero-actions-row .cyber-btn,
     .hero-cta-button-cluster .cyber-btn {
         width: 100%;
         justify-content: center;
-        padding: 13px 20px;
-        font-size: 0.9rem;
+        padding: 12px 18px;
+        font-size: 0.88rem;
     }
 
+    /* 3-Column Metrics Micro-Bar on Mobile */
     .hero-metrics-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
         width: 100%;
+        margin-top: 4px;
     }
 
     .metric-chip {
-        padding: 16px 18px;
-        border-radius: 16px;
+        padding: 12px 6px;
+        border-radius: 14px;
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .metric-chip-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        margin: 0 auto;
+    }
+
+    .metric-chip-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .metric-chip-data h3 {
+        font-size: 1rem;
+        font-weight: 900;
+        margin: 0;
+    }
+
+    .metric-chip-data p {
+        font-size: 0.66rem;
+        color: #71717a;
+        line-height: 1.25;
+        margin: 0;
     }
 
     .tech-marquee-wrapper {
-        margin-top: 32px;
-        padding: 12px 0;
+        margin-top: 28px;
+        padding: 10px 0;
     }
 
     .marquee-chip {
-        padding: 6px 14px;
-        gap: 8px;
+        padding: 5px 12px;
+        gap: 6px;
     }
 
     .chip-label {
-        font-size: 0.8rem;
+        font-size: 0.76rem;
     }
 
     .section-main-heading {
-        font-size: clamp(1.75rem, 6vw, 2.3rem);
+        font-size: clamp(1.7rem, 6vw, 2.2rem);
     }
 
     .section-sub-copy {
-        font-size: 0.92rem;
-        margin-bottom: 28px;
+        font-size: 0.9rem;
+        margin-bottom: 24px;
     }
 
     .platform-card,
     .spotlight-card {
-        padding: 22px 16px;
+        padding: 20px 14px;
         border-radius: 18px;
     }
 
     .platform-card-title,
     .proj-card-title {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
+    }
+
+    .platform-card-desc,
+    .proj-card-desc {
+        font-size: 0.88rem;
+        line-height: 1.6;
+    }
+
+    .proj-stats-strip {
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .stat-pill {
+        font-size: 0.74rem;
+        padding: 4px 8px;
+    }
+
+    .proj-tags-list {
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .tech-tag {
+        font-size: 0.72rem;
+        padding: 3px 8px;
     }
 
     .circuit-timeline {
-        padding: 10px 0;
+        padding: 8px 0;
     }
 
     .circuit-line-laser {
-        left: 12px;
+        left: 10px;
     }
 
     .circuit-dot-pulse {
-        left: 5px;
-        top: 18px;
+        left: 3px;
+        top: 16px;
         width: 14px;
         height: 14px;
     }
 
     .circuit-node-item {
-        padding-left: 36px;
-        margin-bottom: 28px;
+        padding-left: 32px;
+        margin-bottom: 24px;
     }
 
     .circuit-card {
-        padding: 20px 16px;
+        padding: 18px 14px;
         border-radius: 16px;
     }
 
     .circuit-card h3 {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
+    }
+
+    .circuit-card h4 {
+        font-size: 0.86rem;
+    }
+
+    .circuit-card p {
+        font-size: 0.86rem;
+        line-height: 1.6;
+    }
+
+    .circuit-tags {
+        gap: 5px;
+        flex-wrap: wrap;
     }
 
     .circuit-tags span {
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         padding: 3px 8px;
     }
 
     .skills-category-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 14px;
     }
 
     .skill-cat-card {
-        padding: 20px 16px;
+        padding: 18px 14px;
         border-radius: 16px;
     }
 
+    .skill-cat-header h4 {
+        font-size: 1.05rem;
+    }
+
+    .skill-pills-wrap {
+        gap: 6px;
+    }
+
+    .skill-tag-pill {
+        font-size: 0.76rem;
+        padding: 5px 10px;
+    }
+
     .contact-portal-card {
-        padding: 32px 16px;
-        border-radius: 20px;
+        padding: 28px 14px;
+        border-radius: 18px;
+    }
+
+    .portal-title {
+        font-size: clamp(1.4rem, 4vw, 1.85rem);
+    }
+
+    .portal-subtitle {
+        font-size: 0.88rem;
+        line-height: 1.6;
     }
 
     .portal-contact-actions {
         flex-direction: column;
         width: 100%;
-        gap: 12px;
+        gap: 10px;
     }
 
     .portal-contact-actions .cyber-btn {
         width: 100%;
         justify-content: center;
+        padding: 12px 16px;
+        font-size: 0.88rem;
     }
 
     .portal-meta-strip {
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
         align-items: center;
+    }
+
+    .meta-item {
+        font-size: 0.76rem;
+        text-align: center;
     }
 }
 
 @media (max-width: 480px) {
     .cyber-hero-section {
-        padding: 85px 12px 30px 12px;
+        padding: 78px 10px 24px 10px;
     }
 
     .hero-brand-subtitle {
@@ -1951,31 +2053,31 @@
     }
 
     .brand-title-text {
-        font-size: 1.05rem;
+        font-size: 0.95rem;
         letter-spacing: 0.1em;
     }
 
     .brand-flank-line {
-        width: 20px;
+        width: 16px;
     }
 
     .hero-display-giant-title {
-        font-size: clamp(2rem, 11vw, 3.2rem);
+        font-size: clamp(2rem, 11vw, 3rem);
     }
 
     .hero-dynamic-role-container {
-        font-size: 0.8rem;
-        padding: 5px 10px;
+        font-size: 0.76rem;
+        padding: 5px 8px;
     }
 
     .hero-content-shell {
-        padding: 0 10px;
+        padding: 0 8px;
     }
 
     .hero-narrative-card {
         padding: 12px 10px;
         border-radius: 14px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .narrative-segments-header {
@@ -2014,11 +2116,41 @@
         line-height: 1.55;
     }
 
+    .hero-metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+
+    .metric-chip {
+        padding: 10px 4px;
+        border-radius: 12px;
+        gap: 3px;
+    }
+
+    .metric-chip-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+    }
+
+    .metric-chip-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .metric-chip-data h3 {
+        font-size: 0.88rem;
+    }
+
+    .metric-chip-data p {
+        font-size: 0.6rem;
+    }
+
     .platform-card,
     .spotlight-card,
     .circuit-card,
     .skill-cat-card {
-        padding: 16px 12px;
+        padding: 14px 10px;
     }
 }
 

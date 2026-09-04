@@ -257,16 +257,20 @@ const Home = () => {
                         <div className="narrative-segments-header">
                             {bioParagraphs.map((seg, idx) => {
                                 const IconComp = seg.icon;
+                                const shortLabels = ["Maximo", "GenAI", "SAP ABAP"];
                                 return (
                                     <button
                                         key={seg.id}
                                         type="button"
                                         className={`narrative-segment-btn ${currentBioIndex === idx ? 'active' : ''}`}
                                         onClick={() => setCurrentBioIndex(idx)}
+                                        aria-label={`Switch to ${seg.tag}`}
                                     >
                                         <div className="segment-btn-content">
-                                            <IconComp size={15} className="segment-btn-icon" />
+                                            <span className="segment-index-badge">{idx + 1}</span>
+                                            <IconComp size={14} className="segment-btn-icon" />
                                             <span className="segment-btn-label">{seg.tag}</span>
+                                            <span className="segment-btn-short-label">{shortLabels[idx]}</span>
                                         </div>
                                         <div className="segment-progress-track">
                                             <div 
@@ -281,6 +285,7 @@ const Home = () => {
                                 );
                             })}
                         </div>
+
 
                         {/* Animated Text Body with Rich JSX Highlighting */}
                         <div className="narrative-content-stage" key={currentBioIndex}>

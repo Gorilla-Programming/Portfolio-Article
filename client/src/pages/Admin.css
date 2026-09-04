@@ -1118,55 +1118,6 @@
     box-sizing: border-box;
 }
 
-/* --------------------------------------------------------------------------
-   Dark Mode Support
-   -------------------------------------------------------------------------- */
-[data-theme='dark'] .analytics-stat-card,
-.dark .analytics-stat-card,
-[data-theme='dark'] .mod-item-card,
-.dark .mod-item-card,
-[data-theme='dark'] .empty-panel,
-.dark .empty-panel,
-[data-theme='dark'] .admin-segmented-tabs,
-.dark .admin-segmented-tabs,
-[data-theme='dark'] .admin-status-pill,
-.dark .admin-status-pill {
-    background: #18181b !important;
-    border-color: #27272a !important;
-}
-
-[data-theme='dark'] .modal-glass-card,
-.dark .modal-glass-card {
-    background: #18181b !important;
-    border-color: #27272a !important;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
-}
-
-[data-theme='dark'] .modal-field input,
-.dark .modal-field input,
-[data-theme='dark'] .modal-field select,
-.dark .modal-field select,
-[data-theme='dark'] .enquiry-status-select,
-.dark .enquiry-status-select {
-    background: #121215 !important;
-    border-color: #27272a !important;
-    color: #f4f4f5 !important;
-}
-
-[data-theme='dark'] .enquiry-message-box,
-.dark .enquiry-message-box {
-    background: #121215 !important;
-    border-color: #27272a !important;
-}
-
-[data-theme='dark'] .action-icon-btn.edit,
-.dark .action-icon-btn.edit,
-[data-theme='dark'] .action-icon-btn.view,
-.dark .action-icon-btn.view {
-    background: #27272a !important;
-    border-color: #3f3f46 !important;
-    color: #f4f4f5 !important;
-}
 
 /* --------------------------------------------------------------------------
    Responsive Media Queries (Mobile-First Breakpoints)

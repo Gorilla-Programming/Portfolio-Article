@@ -806,57 +806,6 @@
     text-decoration: none;
 }
 
-/* --------------------------------------------------------------------------
-   Dark Mode Support
-   -------------------------------------------------------------------------- */
-[data-theme='dark'] .profile-header-card,
-.dark .profile-header-card,
-[data-theme='dark'] .profile-form-wrap,
-.dark .profile-form-wrap,
-[data-theme='dark'] .empty-tab-box,
-.dark .empty-tab-box,
-[data-theme='dark'] .profile-item-card,
-.dark .profile-item-card {
-    background: #18181b !important;
-    border-color: #27272a !important;
-}
-
-[data-theme='dark'] .profile-stats-strip,
-.dark .profile-stats-strip {
-    background: #121215 !important;
-    border-color: #27272a !important;
-}
-
-[data-theme='dark'] .profile-segmented-nav,
-.dark .profile-segmented-nav {
-    background: #18181b !important;
-    border-color: #27272a !important;
-}
-
-[data-theme='dark'] .form-input-group input,
-.dark .form-input-group input,
-[data-theme='dark'] .form-input-group textarea,
-.dark .form-input-group textarea {
-    background: #121215 !important;
-    border-color: #27272a !important;
-    color: #f4f4f5 !important;
-}
-
-[data-theme='dark'] .view-article-btn,
-.dark .view-article-btn,
-[data-theme='dark'] .access-course-btn,
-.dark .access-course-btn {
-    background: rgba(234, 88, 12, 0.15) !important;
-    border-color: rgba(234, 88, 12, 0.3) !important;
-    color: #fb923c !important;
-}
-
-[data-theme='dark'] .category-tag,
-.dark .category-tag {
-    background: rgba(234, 88, 12, 0.15) !important;
-    border-color: rgba(234, 88, 12, 0.3) !important;
-    color: #fb923c !important;
-}
 
 /* --------------------------------------------------------------------------
    Responsive Media Queries (Mobile-First Architecture)

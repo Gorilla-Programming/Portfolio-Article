@@ -629,31 +629,6 @@
     box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.3);
 }
 
-/* --------------------------------------------------------------------------
-   Dark Mode Support
-   -------------------------------------------------------------------------- */
-[data-theme='dark'] .editor-main-card,
-.dark .editor-main-card,
-[data-theme='dark'] .post-status-pill,
-.dark .post-status-pill,
-[data-theme='dark'] .back-link-btn,
-.dark .back-link-btn,
-[data-theme='dark'] .success-card,
-.dark .success-card {
-    background: #18181b !important;
-    border-color: #27272a !important;
-}
-
-[data-theme='dark'] .meta-field input,
-.dark .meta-field input,
-[data-theme='dark'] .meta-field textarea,
-.dark .meta-field textarea,
-[data-theme='dark'] .meta-field select,
-.dark .meta-field select {
-    background: #121215 !important;
-    border-color: #27272a !important;
-    color: #f4f4f5 !important;
-}
 
 /* --------------------------------------------------------------------------
    Responsive Media Queries (Mobile-First Architecture)

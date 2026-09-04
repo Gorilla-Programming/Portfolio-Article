@@ -146,12 +146,13 @@ const AnantPortfolio = () => {
 
                     {/* Headline with Dual-Tone Continuous Shining */}
                     <h1 className="ap-hero-title">
-                        <span className="ap-firstname">ANANT</span> <span className="ap-surname">CHAUDHARY</span>
+                        <span className="ap-firstname">ANANT</span>
+                        <span className="ap-surname">CHAUDHARY</span>
                     </h1>
 
                     {/* Dynamic Typewriter Role */}
                     <div className="ap-dynamic-typewriter">
-                        <span className="ap-typewriter-prefix">&gt; </span>
+                        <span className="ap-typewriter-prefix">&gt;&nbsp;</span>
                         <span className="ap-typewriter-text">{currentText}</span>
                         <span className="ap-cursor-blink">|</span>
                     </div>
@@ -161,29 +162,39 @@ const AnantPortfolio = () => {
                         Results-driven <strong>Supply Chain &amp; 3PL Warehousing Leader</strong> with <strong>8+ years</strong> of comprehensive operational mastery across large-scale fulfillment centers, multi-client logistics, and e-commerce distribution.
                     </p>
 
-                    {/* Quick Contact & Info Strip */}
-                    <div className="ap-contact-pills-row">
-                        <div className="ap-info-chip">
-                            <MapPin size={15} color="#ea580c" />
-                            <span>Lucknow / NCR, India</span>
-                        </div>
-                        <button className="ap-info-chip interactive" onClick={copyEmail}>
-                            <Mail size={15} color="#ea580c" />
-                            <span>Bkanant5@gmail.com</span>
-                            {copiedEmail ? <Check size={14} color="#10b981" /> : <Copy size={13} />}
-                        </button>
-                        <button className="ap-info-chip interactive" onClick={copyPhone}>
-                            <Phone size={15} color="#ea580c" />
-                            <span>+91 8851179617</span>
-                            {copiedPhone ? <Check size={14} color="#10b981" /> : <Copy size={13} />}
-                        </button>
-                        <a href="#contact" className="ap-info-chip action-chip">
-                            <span>Send Message</span>
-                            <ArrowRight size={13} />
+                    {/* Hero Direct Action CTA Cluster */}
+                    <div className="ap-hero-cta-cluster">
+                        <a href="#experience" className="ap-cta-btn ap-cta-primary">
+                            <Briefcase size={18} />
+                            <span>Explore Experience</span>
+                            <ArrowRight size={16} />
+                        </a>
+                        <a href="#contact" className="ap-cta-btn ap-cta-secondary">
+                            <Mail size={18} color="#ea580c" />
+                            <span>Connect &amp; Inquire</span>
+                            <ArrowRight size={14} />
                         </a>
                     </div>
 
-                    {/* 4 Quantitative Metric Cards */}
+                    {/* Quick Contact & Info Strip */}
+                    <div className="ap-contact-pills-row">
+                        <div className="ap-info-chip">
+                            <MapPin size={14} color="#ea580c" />
+                            <span>Lucknow / NCR, India</span>
+                        </div>
+                        <button className="ap-info-chip interactive" onClick={copyEmail} type="button" aria-label="Copy Email">
+                            <Mail size={14} color="#ea580c" />
+                            <span>Bkanant5@gmail.com</span>
+                            {copiedEmail ? <Check size={14} color="#10b981" /> : <Copy size={13} />}
+                        </button>
+                        <button className="ap-info-chip interactive" onClick={copyPhone} type="button" aria-label="Copy Phone">
+                            <Phone size={14} color="#ea580c" />
+                            <span>+91 8851179617</span>
+                            {copiedPhone ? <Check size={14} color="#10b981" /> : <Copy size={13} />}
+                        </button>
+                    </div>
+
+                    {/* 4 Quantitative Metric Cards in 2x2 (Mobile) / 4-Col (Desktop) */}
                     <div className="ap-metrics-grid">
                         {metrics.map((m, idx) => (
                             <div key={idx} className="ap-metric-card">
@@ -226,31 +237,40 @@ const AnantPortfolio = () => {
                     <p className="ap-section-sub">Proven track record of high-impact leadership across Tier-1 logistics organizations.</p>
                 </div>
 
-                {/* Company Tabs */}
+                {/* Company Tabs (3-Column Equal Grid on Mobile & Desktop) */}
                 <div className="ap-exp-tabs-nav">
                     <button 
+                        type="button"
                         className={`ap-exp-tab-btn ${activeTab === 'delhivery' ? 'active' : ''}`}
                         onClick={() => setActiveTab('delhivery')}
+                        aria-label="View Delhivery Limited experience"
                     >
-                        <Building size={16} />
-                        <span>Delhivery Limited</span>
-                        <small className="ap-tab-period">2025 – Present</small>
+                        <Building size={16} className="ap-tab-icon" />
+                        <span className="ap-tab-label-full">Delhivery Limited</span>
+                        <span className="ap-tab-label-short">Delhivery</span>
+                        <small className="ap-tab-period">2025–Pres</small>
                     </button>
                     <button 
+                        type="button"
                         className={`ap-exp-tab-btn ${activeTab === 'citykart' ? 'active' : ''}`}
                         onClick={() => setActiveTab('citykart')}
+                        aria-label="View Citykart Venture experience"
                     >
-                        <Truck size={16} />
-                        <span>Citykart Venture</span>
-                        <small className="ap-tab-period">2024 – 2025</small>
+                        <Truck size={16} className="ap-tab-icon" />
+                        <span className="ap-tab-label-full">Citykart Venture</span>
+                        <span className="ap-tab-label-short">Citykart</span>
+                        <small className="ap-tab-period">2024–2025</small>
                     </button>
                     <button 
+                        type="button"
                         className={`ap-exp-tab-btn ${activeTab === 'reliance' ? 'active' : ''}`}
                         onClick={() => setActiveTab('reliance')}
+                        aria-label="View Reliance Retail experience"
                     >
-                        <Package size={16} />
-                        <span>Reliance Retail (6.5 Yrs)</span>
-                        <small className="ap-tab-period">2017 – 2024</small>
+                        <Package size={16} className="ap-tab-icon" />
+                        <span className="ap-tab-label-full">Reliance Retail (6.5 Yrs)</span>
+                        <span className="ap-tab-label-short">Reliance</span>
+                        <small className="ap-tab-period">2017–2024</small>
                     </button>
                 </div>
 
@@ -259,8 +279,8 @@ const AnantPortfolio = () => {
                     {activeTab === 'delhivery' && (
                         <div className="ap-exp-card animate-fade-in">
                             <div className="ap-exp-header">
-                                <div>
-                                    <span className="ap-role-badge">CURRENT ROLE</span>
+                                <div className="ap-exp-head-main">
+                                    <span className="ap-role-badge">CURRENT LEADERSHIP ROLE</span>
                                     <h3 className="ap-exp-title">Senior Manager</h3>
                                     <span className="ap-exp-company">Delhivery Limited • Supply Chain &amp; 3PL Operations</span>
                                 </div>
@@ -268,11 +288,26 @@ const AnantPortfolio = () => {
                             </div>
 
                             <ul className="ap-exp-bullets">
-                                <li><strong>Multi-Fulfillment Center Oversight:</strong> Managing multiple FCs averaging 80,000+ sq. ft. each with over 20,000+ SKUs across diverse industry accounts including Volvo Eicher, Voltas, Hitachi, Mahindra &amp; Mahindra (M&M), Jubilant FoodWorks (JFL), Discover Pilgrim, and Mylo.</li>
-                                <li><strong>Transportation &amp; Logistics Planning:</strong> Leading comprehensive logistics routing, multi-stakeholder synchronization, and carrier capacity planning.</li>
-                                <li><strong>Metric &amp; KPI Adherence (100% SLA):</strong> Tracking end-to-end performance metrics with comprehensive Root Cause Analysis (RCA) on deviations.</li>
-                                <li><strong>Cost Optimization &amp; Lean Productivity:</strong> Monitoring Load vs. Resource modeling, eliminating waste time &amp; motion, controlling overtime (OT), daily operating expenses, and R&amp;M budgets.</li>
-                                <li><strong>Inventory Accuracy &amp; Zero-Debit Audits:</strong> Spearheading rigorous inventory control using Cycle Counts, Daily FTP fail &amp; Put audits, Quarterly Wall-to-Wall (W2W) Audits, and 5S Bin Hygiene.</li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Multi-Fulfillment Center Oversight:</strong> Managing multiple FCs averaging 80,000+ sq. ft. each with over 20,000+ SKUs across marquee accounts including Volvo Eicher, Voltas, Hitachi, Mahindra &amp; Mahindra (M&M), Jubilant FoodWorks (JFL), Discover Pilgrim, and Mylo.</div>
+                                </li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Transportation &amp; Logistics Planning:</strong> Leading comprehensive logistics routing, multi-stakeholder synchronization, and carrier capacity planning.</div>
+                                </li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Metric &amp; KPI Adherence (100% SLA):</strong> Tracking end-to-end performance metrics with comprehensive Root Cause Analysis (RCA) on deviations.</div>
+                                </li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Cost Optimization &amp; Lean Productivity:</strong> Monitoring Load vs. Resource modeling, eliminating waste time &amp; motion, controlling overtime (OT), daily operating expenses, and R&amp;M budgets.</div>
+                                </li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Inventory Accuracy &amp; Zero-Debit Audits:</strong> Spearheading rigorous inventory control using Cycle Counts, Daily FTP fail &amp; Put audits, Quarterly Wall-to-Wall (W2W) Audits, and 5S Bin Hygiene.</div>
+                                </li>
                             </ul>
                         </div>
                     )}
@@ -280,7 +315,7 @@ const AnantPortfolio = () => {
                     {activeTab === 'citykart' && (
                         <div className="ap-exp-card animate-fade-in">
                             <div className="ap-exp-header">
-                                <div>
+                                <div className="ap-exp-head-main">
                                     <span className="ap-role-badge">WAREHOUSE LEADERSHIP</span>
                                     <h3 className="ap-exp-title">Warehouse Manager</h3>
                                     <span className="ap-exp-company">Citykart Venture Private Limited • Logistics Division</span>
@@ -289,9 +324,18 @@ const AnantPortfolio = () => {
                             </div>
 
                             <ul className="ap-exp-bullets">
-                                <li><strong>End-to-End Logistics Governance:</strong> Directed freight payment clearances, onboarding premier transport partners, vehicle regulatory compliance, and dispute resolution.</li>
-                                <li><strong>Loss Prevention &amp; Safety Compliance:</strong> Spearheaded scrap management, administrative oversight for the Loss Prevention team, and fire, health &amp; safety inspections.</li>
-                                <li><strong>Strategic MIS &amp; Performance Reporting:</strong> Crafted executive KPI dashboards capturing productivity, workflow velocity, and operational SLA tracking.</li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>End-to-End Logistics Governance:</strong> Directed freight payment clearances, onboarding premier transport partners, vehicle regulatory compliance, and dispute resolution.</div>
+                                </li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Loss Prevention &amp; Safety Compliance:</strong> Spearheaded scrap management, administrative oversight for the Loss Prevention team, and fire, health &amp; safety inspections.</div>
+                                </li>
+                                <li>
+                                    <CheckCircle2 size={16} className="ap-bullet-icon" />
+                                    <div><strong>Strategic MIS &amp; Performance Reporting:</strong> Crafted executive KPI dashboards capturing productivity, workflow velocity, and operational SLA tracking.</div>
+                                </li>
                             </ul>
                         </div>
                     )}
@@ -299,7 +343,7 @@ const AnantPortfolio = () => {
                     {activeTab === 'reliance' && (
                         <div className="ap-exp-card animate-fade-in">
                             <div className="ap-exp-header">
-                                <div>
+                                <div className="ap-exp-head-main">
                                     <span className="ap-role-badge">RAPID 6.5-YEAR PROMOTION TRACK</span>
                                     <h3 className="ap-exp-title">Manager ➔ Deputy Manager ➔ Assistant Manager</h3>
                                     <span className="ap-exp-company">Reliance Retail Limited • Supply Chain &amp; E-Commerce</span>
@@ -309,35 +353,47 @@ const AnantPortfolio = () => {
 
                             <div className="ap-progression-tree">
                                 <div className="ap-prog-step">
-                                    <div className="ap-step-head">
-                                        <h4>Manager (Apr 2023 – Feb 2024)</h4>
-                                        <small>Outbound, Transport &amp; E-Commerce</small>
+                                    <div className="ap-prog-badge">1</div>
+                                    <div className="ap-prog-content">
+                                        <div className="ap-step-head">
+                                            <h4>Manager (Apr 2023 – Feb 2024)</h4>
+                                            <span className="ap-step-tag">Outbound, Transport &amp; E-Commerce</span>
+                                        </div>
+                                        <p>Directed warehouse operations, cost control, 5S practices, damage mitigation, and led the PPMP module for Myntra, Nykaa, Zivame, TIRA, and Amazon JIT marketplace.</p>
                                     </div>
-                                    <p>Directed warehouse operations, cost control, 5S practices, damage mitigation, and led the PPMP module for Myntra, Nykaa, Zivame, TIRA, and Amazon JIT marketplace.</p>
                                 </div>
 
                                 <div className="ap-prog-step">
-                                    <div className="ap-step-head">
-                                        <h4>Deputy Manager (Oct 2021 – Mar 2023)</h4>
-                                        <small>Marketplace Returns &amp; Lean CIP</small>
+                                    <div className="ap-prog-badge">2</div>
+                                    <div className="ap-prog-content">
+                                        <div className="ap-step-head">
+                                            <h4>Deputy Manager (Oct 2021 – Mar 2023)</h4>
+                                            <span className="ap-step-tag">Marketplace Returns &amp; Lean CIP</span>
+                                        </div>
+                                        <p>Orchestrated end-to-end returns across Myntra, Amazon, Flipkart, B2C M&amp;S, and Retail. Pioneered Continuous Improvement Projects (CIP) for space optimization, FIFO, and physical inventory reconciliations.</p>
                                     </div>
-                                    <p>Orchestrated end-to-end returns across Myntra, Amazon, Flipkart, B2C M&amp;S, and Retail. Pioneered Continuous Improvement Projects (CIP) for space optimization, FIFO, and physical inventory reconciliations.</p>
                                 </div>
 
                                 <div className="ap-prog-step">
-                                    <div className="ap-step-head">
-                                        <h4>E-Commerce Assistant Manager (Mar 2020 – Sep 2021)</h4>
-                                        <small>Marksandspencer.in Launch &amp; Marketplaces</small>
+                                    <div className="ap-prog-badge">3</div>
+                                    <div className="ap-prog-content">
+                                        <div className="ap-step-head">
+                                            <h4>E-Commerce Assistant Manager (Mar 2020 – Sep 2021)</h4>
+                                            <span className="ap-step-tag">Marksandspencer.in Launch</span>
+                                        </div>
+                                        <p>Forefronted B2C operations for <strong>Marksandspencer.in</strong> online business launch. Managed Myntra, AJIO, Amazon, Flipkart, and Project EVE with 100% order fulfillment.</p>
                                     </div>
-                                    <p>Forefronted B2C operations for <strong>Marksandspencer.in</strong> online business launch. Managed Myntra, AJIO, Amazon, Flipkart, and Project EVE with 100% order fulfillment.</p>
                                 </div>
 
                                 <div className="ap-prog-step">
-                                    <div className="ap-step-head">
-                                        <h4>Transport Assistant Manager &amp; GET (Sep 2017 – Feb 2020)</h4>
-                                        <small>Dispatch Planning, PAN-India E-Waybill &amp; TAT</small>
+                                    <div className="ap-prog-badge">4</div>
+                                    <div className="ap-prog-content">
+                                        <div className="ap-step-head">
+                                            <h4>Transport Assistant Manager &amp; GET (Sep 2017 – Feb 2020)</h4>
+                                            <span className="ap-step-tag">Dispatch Planning &amp; PAN-India E-Waybill</span>
+                                        </div>
+                                        <p>Managed loading/dispatch operations, daily MIS reporting, PAN India E-waybill compliance, warehouse relocation, vehicle rotation, and picker motion optimization.</p>
                                     </div>
-                                    <p>Managed loading/dispatch operations, daily MIS reporting, PAN India E-waybill compliance, warehouse relocation, vehicle rotation, and picker motion optimization.</p>
                                 </div>
                             </div>
                         </div>

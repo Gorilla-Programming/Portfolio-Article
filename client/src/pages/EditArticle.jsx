@@ -1,6 +1,6 @@
 import API_BASE_URL from '../config';
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { useArticles } from '../context/ArticleContext';
 import { useAuth } from '../context/AuthContext';
@@ -8,7 +8,7 @@ import {
     Save, Image as ImageIcon, Link as LinkIcon, Type, CheckCircle,
     Bold, Italic, Heading1, Heading2, Heading3, ChevronLeft, Loader2, Copy, Check,
     List, ListOrdered, Quote, Code, Eye, FileEdit, Columns, Sparkles,
-    Tag, User, BookOpen
+    Tag, User, BookOpen, PenTool
 } from 'lucide-react';
 import './Post.css';
 
@@ -18,7 +18,9 @@ const EditArticle = () => {
     const { articles, updateArticle } = useArticles();
     const { isAuthenticated, user } = useAuth();
     const [submitted, setSubmitted] = useState(false);
-    const [viewMode, setViewMode] = useState('split');
+    
+    // Auto-detect mobile screen width on initial load for optimal default viewMode
+    const [viewMode, setViewMode] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 800 ? 'write' : 'split')); // 'write' | 'preview' | 'split'
     const editorRef = useRef(null);
     const fileInputRef = useRef(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -158,21 +160,30 @@ const EditArticle = () => {
 
     return (
         <div className="post-container animate-fade-in">
+            {/* Ambient Lighting Mesh */}
+            <div className="post-ambient-mesh">
+                <div className="post-orb post-orb-orange"></div>
+                <div className="post-orb post-orb-emerald"></div>
+                <div className="post-grid-overlay"></div>
+            </div>
+
             <div className="article-top-nav">
                 <button onClick={() => navigate('/admin')} className="back-link-btn">
-                    <ChevronLeft size={18} /> Back to Dashboard
+                    <ChevronLeft size={18} /> <span>Back to Dashboard</span>
                 </button>
             </div>
 
             <header className="post-page-header">
-                <div className="badge-pill cyan">
-                    <Sparkles size={14} /> Content Management Suite
+                <div className="post-status-pill">
+                    <span className="post-live-dot"></span>
+                    <Sparkles size={13} />
+                    <span>CONTENT MANAGEMENT SUITE</span>
                 </div>
-                <h1 className="page-title">
+                <h1 className="post-hero-title">
                     Edit <span className="text-gradient-primary">Article</span>
                 </h1>
-                <p className="page-subtitle">
-                    Refine article copy, update category tags, and preview live formatting.
+                <p className="post-hero-sub">
+                    Refine article copy, update category tags, and preview live Markdown formatting.
                 </p>
             </header>
 
@@ -251,30 +262,32 @@ const EditArticle = () => {
                     {/* Markdown Studio Editor */}
                     <div className={`studio-editor-box ${viewMode}`}>
                         <div className="studio-toolbar">
-                            <div className="format-tools-group">
-                                <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('*', '*')} title="Italic"><Italic size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('> ')} title="Blockquote"><Quote size={16} /></button>
-                                <div className="toolbar-sep"></div>
-                                <button type="button" onClick={() => insertFormatting('# ')} title="Heading 1"><Heading1 size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('## ')} title="Heading 2"><Heading2 size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('### ')} title="Heading 3"><Heading3 size={16} /></button>
-                                <div className="toolbar-sep"></div>
-                                <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={16} /></button>
-                                <div className="toolbar-sep"></div>
-                                <button
-                                    type="button"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    title="Upload & Insert Image"
-                                    disabled={isUploading}
-                                    className="upload-trigger-btn"
-                                >
-                                    {isUploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
-                                    <span>{isUploading ? 'Uploading...' : 'Image'}</span>
-                                </button>
-                                <button type="button" onClick={() => insertFormatting('[', '](https://)')} title="Insert Link"><LinkIcon size={16} /></button>
+                            <div className="format-tools-scroll-wrap">
+                                <div className="format-tools-group">
+                                    <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('*', '*')} title="Italic"><Italic size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('> ')} title="Blockquote"><Quote size={16} /></button>
+                                    <div className="toolbar-sep"></div>
+                                    <button type="button" onClick={() => insertFormatting('# ')} title="Heading 1"><Heading1 size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('## ')} title="Heading 2"><Heading2 size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('### ')} title="Heading 3"><Heading3 size={16} /></button>
+                                    <div className="toolbar-sep"></div>
+                                    <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={16} /></button>
+                                    <div className="toolbar-sep"></div>
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        title="Upload & Insert Image"
+                                        disabled={isUploading}
+                                        className="upload-trigger-btn"
+                                    >
+                                        {isUploading ? <Loader2 size={15} className="animate-spin" /> : <ImageIcon size={15} />}
+                                        <span>{isUploading ? 'Uploading...' : 'Image'}</span>
+                                    </button>
+                                    <button type="button" onClick={() => insertFormatting('[', '](https://)')} title="Insert Link"><LinkIcon size={16} /></button>
+                                </div>
                             </div>
 
                             <div className="view-mode-group">
@@ -284,15 +297,15 @@ const EditArticle = () => {
                                     onClick={() => setViewMode('write')}
                                     title="Write Only"
                                 >
-                                    <FileEdit size={16} /> Write
+                                    <FileEdit size={15} /> <span>Write</span>
                                 </button>
                                 <button
                                     type="button"
-                                    className={viewMode === 'split' ? 'mode-btn active' : 'mode-btn'}
+                                    className={viewMode === 'split' ? 'mode-btn active desktop-only-split' : 'mode-btn desktop-only-split'}
                                     onClick={() => setViewMode('split')}
                                     title="Split View"
                                 >
-                                    <Columns size={16} /> Split
+                                    <Columns size={15} /> <span>Split</span>
                                 </button>
                                 <button
                                     type="button"
@@ -300,7 +313,7 @@ const EditArticle = () => {
                                     onClick={() => setViewMode('preview')}
                                     title="Live Preview"
                                 >
-                                    <Eye size={16} /> Preview
+                                    <Eye size={15} /> <span>Preview</span>
                                 </button>
                             </div>
                         </div>
@@ -358,7 +371,7 @@ const EditArticle = () => {
 
                     <div className="editor-submit-row">
                         <button type="submit" className="btn-primary submit-article-btn">
-                            <Save size={18} /> Update Article
+                            <Save size={16} /> <span>Update Article</span>
                         </button>
                     </div>
                 </form>

@@ -1,6 +1,6 @@
 import API_BASE_URL from '../config';
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { useArticles } from '../context/ArticleContext';
 import { useAuth } from '../context/AuthContext';
@@ -8,7 +8,7 @@ import {
     Send, Image as ImageIcon, Link as LinkIcon, Type, CheckCircle,
     Bold, Italic, Heading1, Heading2, Heading3, Loader2, Copy, Check,
     List, ListOrdered, Quote, Code, Eye, FileEdit, Columns, Sparkles,
-    Tag, User, BookOpen
+    Tag, User, BookOpen, PenTool, ArrowLeft
 } from 'lucide-react';
 import './Post.css';
 
@@ -17,7 +17,9 @@ const Post = () => {
     const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
-    const [viewMode, setViewMode] = useState('split'); // 'write' | 'preview' | 'split'
+    
+    // Auto-detect mobile screen width on initial load for optimal default viewMode
+    const [viewMode, setViewMode] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 800 ? 'write' : 'split')); // 'write' | 'preview' | 'split'
     const editorRef = useRef(null);
     const fileInputRef = useRef(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -149,15 +151,24 @@ const Post = () => {
 
     return (
         <div className="post-container animate-fade-in">
+            {/* Ambient Lighting Mesh (Matching Anant Portfolio) */}
+            <div className="post-ambient-mesh">
+                <div className="post-orb post-orb-orange"></div>
+                <div className="post-orb post-orb-emerald"></div>
+                <div className="post-grid-overlay"></div>
+            </div>
+
             <header className="post-page-header">
-                <div className="badge-pill cyan">
-                    <Sparkles size={14} /> Markdown Writing Studio
+                <div className="post-status-pill">
+                    <span className="post-live-dot"></span>
+                    <PenTool size={13} />
+                    <span>TECHNICAL KNOWLEDGE STUDIO</span>
                 </div>
-                <h1 className="page-title">
-                    Create New <span className="text-gradient-primary">Article</span>
+                <h1 className="post-hero-title">
+                    Write <span className="text-gradient-primary">Article</span>
                 </h1>
-                <p className="page-subtitle">
-                    Share your technical expertise with the developer community using our live Markdown editor.
+                <p className="post-hero-sub">
+                    Share your technical expertise, architectural blueprints, and IBM Maximo guides with the community.
                 </p>
             </header>
 
@@ -237,30 +248,32 @@ const Post = () => {
                     {/* Markdown Studio Editor */}
                     <div className={`studio-editor-box ${viewMode}`}>
                         <div className="studio-toolbar">
-                            <div className="format-tools-group">
-                                <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('*', '*')} title="Italic"><Italic size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('> ')} title="Blockquote"><Quote size={16} /></button>
-                                <div className="toolbar-sep"></div>
-                                <button type="button" onClick={() => insertFormatting('# ')} title="Heading 1"><Heading1 size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('## ')} title="Heading 2"><Heading2 size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('### ')} title="Heading 3"><Heading3 size={16} /></button>
-                                <div className="toolbar-sep"></div>
-                                <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={16} /></button>
-                                <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={16} /></button>
-                                <div className="toolbar-sep"></div>
-                                <button
-                                    type="button"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    title="Upload & Insert Image"
-                                    disabled={isUploading}
-                                    className="upload-trigger-btn"
-                                >
-                                    {isUploading ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
-                                    <span>{isUploading ? 'Uploading...' : 'Image'}</span>
-                                </button>
-                                <button type="button" onClick={() => insertFormatting('[', '](https://)')} title="Insert Link"><LinkIcon size={16} /></button>
+                            <div className="format-tools-scroll-wrap">
+                                <div className="format-tools-group">
+                                    <button type="button" onClick={() => insertFormatting('**', '**')} title="Bold"><Bold size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('*', '*')} title="Italic"><Italic size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('> ')} title="Blockquote"><Quote size={16} /></button>
+                                    <div className="toolbar-sep"></div>
+                                    <button type="button" onClick={() => insertFormatting('# ')} title="Heading 1"><Heading1 size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('## ')} title="Heading 2"><Heading2 size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('### ')} title="Heading 3"><Heading3 size={16} /></button>
+                                    <div className="toolbar-sep"></div>
+                                    <button type="button" onClick={() => insertFormatting('- ')} title="Bullet List"><List size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('1. ')} title="Numbered List"><ListOrdered size={16} /></button>
+                                    <button type="button" onClick={() => insertFormatting('```\n', '\n```')} title="Code Block"><Code size={16} /></button>
+                                    <div className="toolbar-sep"></div>
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        title="Upload & Insert Image"
+                                        disabled={isUploading}
+                                        className="upload-trigger-btn"
+                                    >
+                                        {isUploading ? <Loader2 size={15} className="animate-spin" /> : <ImageIcon size={15} />}
+                                        <span>{isUploading ? 'Uploading...' : 'Image'}</span>
+                                    </button>
+                                    <button type="button" onClick={() => insertFormatting('[', '](https://)')} title="Insert Link"><LinkIcon size={16} /></button>
+                                </div>
                             </div>
 
                             <div className="view-mode-group">
@@ -270,15 +283,15 @@ const Post = () => {
                                     onClick={() => setViewMode('write')}
                                     title="Write Only"
                                 >
-                                    <FileEdit size={16} /> Write
+                                    <FileEdit size={15} /> <span>Write</span>
                                 </button>
                                 <button
                                     type="button"
-                                    className={viewMode === 'split' ? 'mode-btn active' : 'mode-btn'}
+                                    className={viewMode === 'split' ? 'mode-btn active desktop-only-split' : 'mode-btn desktop-only-split'}
                                     onClick={() => setViewMode('split')}
                                     title="Split View"
                                 >
-                                    <Columns size={16} /> Split
+                                    <Columns size={15} /> <span>Split</span>
                                 </button>
                                 <button
                                     type="button"
@@ -286,7 +299,7 @@ const Post = () => {
                                     onClick={() => setViewMode('preview')}
                                     title="Live Preview"
                                 >
-                                    <Eye size={16} /> Preview
+                                    <Eye size={15} /> <span>Preview</span>
                                 </button>
                             </div>
                         </div>
@@ -345,7 +358,7 @@ const Post = () => {
                     {/* Bottom Submit Row */}
                     <div className="editor-submit-row">
                         <button type="submit" className="btn-primary submit-article-btn">
-                            <Send size={18} /> Submit Article for Review
+                            <Send size={16} /> <span>Submit Article for Review</span>
                         </button>
                     </div>
                 </form>

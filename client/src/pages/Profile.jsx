@@ -6,7 +6,7 @@ import {
     User, Mail, Phone, Lock, FileText, ShoppingBag, 
     ShieldCheck, CheckCircle2, Clock, AlertCircle, Save, 
     ExternalLink, Plus, BookOpen, Layers, Sparkles, KeyRound,
-    Globe, Linkedin, Github, Twitter, ArrowRight, Check
+    Globe, Linkedin, Github, Twitter, ArrowRight, Check, Shield
 } from 'lucide-react';
 import './Profile.css';
 
@@ -166,7 +166,12 @@ const Profile = () => {
 
     return (
         <div className="profile-page-wrap animate-fade-in">
-            <div className="profile-ambient-glow"></div>
+            {/* Ambient Lighting Mesh (Matching Anant Portfolio) */}
+            <div className="profile-ambient-mesh">
+                <div className="profile-orb profile-orb-orange"></div>
+                <div className="profile-orb profile-orb-emerald"></div>
+                <div className="profile-grid-overlay"></div>
+            </div>
 
             <div className="profile-container">
                 {/* Profile Top Hero Card */}
@@ -183,14 +188,16 @@ const Profile = () => {
                                 <h1 className="profile-full-name">
                                     {profileData?.firstName ? `${profileData.firstName} ${profileData.lastName || ''}`.trim() : user?.email?.split('@')[0]}
                                 </h1>
-                                <span className={`profile-role-pill ${profileData?.role === 'admin' ? 'admin' : 'member'}`}>
-                                    <ShieldCheck size={13} />
-                                    <span>{profileData?.role?.toUpperCase() || 'MEMBER'}</span>
-                                </span>
-                                <span className="profile-verified-pill">
-                                    <CheckCircle2 size={13} />
-                                    <span>Verified</span>
-                                </span>
+                                <div className="profile-badges-cluster">
+                                    <span className={`profile-role-pill ${profileData?.role === 'admin' ? 'admin' : 'member'}`}>
+                                        <ShieldCheck size={12} />
+                                        <span>{profileData?.role?.toUpperCase() || 'MEMBER'}</span>
+                                    </span>
+                                    <span className="profile-verified-pill">
+                                        <CheckCircle2 size={12} />
+                                        <span>Verified</span>
+                                    </span>
+                                </div>
                             </div>
 
                             <p className="profile-designation-text">
@@ -198,7 +205,7 @@ const Profile = () => {
                             </p>
 
                             <p className="profile-email-text">
-                                <Mail size={14} />
+                                <Mail size={13} />
                                 <span>{user?.email}</span>
                             </p>
                         </div>
@@ -223,36 +230,41 @@ const Profile = () => {
                     </div>
                 </div>
 
-                {/* Segmented Tab Navigation */}
-                <div className="profile-segmented-nav glass">
-                    <button
-                        className={`profile-tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
-                        onClick={() => { setActiveTab('articles'); setFeedback({ type: '', message: '' }); }}
-                    >
-                        <FileText size={16} />
-                        <span>My Articles ({articles.length})</span>
-                    </button>
-                    <button
-                        className={`profile-tab-btn ${activeTab === 'purchases' ? 'active' : ''}`}
-                        onClick={() => { setActiveTab('purchases'); setFeedback({ type: '', message: '' }); }}
-                    >
-                        <ShoppingBag size={16} />
-                        <span>My Purchases ({purchases.length})</span>
-                    </button>
-                    <button
-                        className={`profile-tab-btn ${activeTab === 'info' ? 'active' : ''}`}
-                        onClick={() => { setActiveTab('info'); setFeedback({ type: '', message: '' }); }}
-                    >
-                        <User size={16} />
-                        <span>Edit Profile</span>
-                    </button>
-                    <button
-                        className={`profile-tab-btn ${activeTab === 'security' ? 'active' : ''}`}
-                        onClick={() => { setActiveTab('security'); setFeedback({ type: '', message: '' }); }}
-                    >
-                        <Lock size={16} />
-                        <span>Security &amp; Password</span>
-                    </button>
+                {/* Segmented Tab Navigation with Horizontal Swipe */}
+                <div className="profile-segmented-nav-wrap">
+                    <div className="profile-segmented-nav glass">
+                        <button
+                            className={`profile-tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
+                            onClick={() => { setActiveTab('articles'); setFeedback({ type: '', message: '' }); }}
+                        >
+                            <FileText size={16} />
+                            <span className="tab-text-full">My Articles ({articles.length})</span>
+                            <span className="tab-text-short">Articles ({articles.length})</span>
+                        </button>
+                        <button
+                            className={`profile-tab-btn ${activeTab === 'purchases' ? 'active' : ''}`}
+                            onClick={() => { setActiveTab('purchases'); setFeedback({ type: '', message: '' }); }}
+                        >
+                            <ShoppingBag size={16} />
+                            <span className="tab-text-full">My Purchases ({purchases.length})</span>
+                            <span className="tab-text-short">Purchases ({purchases.length})</span>
+                        </button>
+                        <button
+                            className={`profile-tab-btn ${activeTab === 'info' ? 'active' : ''}`}
+                            onClick={() => { setActiveTab('info'); setFeedback({ type: '', message: '' }); }}
+                        >
+                            <User size={16} />
+                            <span>Edit Profile</span>
+                        </button>
+                        <button
+                            className={`profile-tab-btn ${activeTab === 'security' ? 'active' : ''}`}
+                            onClick={() => { setActiveTab('security'); setFeedback({ type: '', message: '' }); }}
+                        >
+                            <Lock size={16} />
+                            <span className="tab-text-full">Security &amp; Password</span>
+                            <span className="tab-text-short">Security</span>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Feedback Notification Alert */}
@@ -268,8 +280,8 @@ const Profile = () => {
                     <div className="profile-tab-content animate-fade-in">
                         <div className="tab-section-header">
                             <div>
-                                <h2>Authored Articles</h2>
-                                <p>Articles and architectural blueprints submitted by you to Chaudhary Articles.</p>
+                                <h2>Authored Articles ({articles.length})</h2>
+                                <p>Articles and blueprints submitted by you to Chaudhary Articles.</p>
                             </div>
                             <Link to="/post" className="btn-primary post-new-btn">
                                 <Plus size={16} />
@@ -302,7 +314,7 @@ const Profile = () => {
                                             </div>
 
                                             <h3 className="item-card-title">{art.title}</h3>
-                                            <p className="item-card-excerpt">{art.excerpt}</p>
+                                            {art.excerpt && <p className="item-card-excerpt">{art.excerpt}</p>}
                                         </div>
 
                                         <div className="item-actions-col">
@@ -322,7 +334,7 @@ const Profile = () => {
                             </div>
                         ) : (
                             <div className="empty-tab-box glass-card">
-                                <FileText size={48} className="empty-icon-amber" />
+                                <FileText size={44} className="empty-icon-amber" />
                                 <h3>No articles published yet</h3>
                                 <p>Share your architectural insights, technical tutorials, and IBM Maximo blueprints with the community.</p>
                                 <Link to="/post" className="btn-primary mt-2">
@@ -339,7 +351,7 @@ const Profile = () => {
                     <div className="profile-tab-content animate-fade-in">
                         <div className="tab-section-header">
                             <div>
-                                <h2>Purchased Modules &amp; Enrolled Courses</h2>
+                                <h2>Purchased Modules &amp; Enrolled Courses ({purchases.length})</h2>
                                 <p>Modules, training bundles, and advisory sessions associated with your account.</p>
                             </div>
                             <Link to="/courses" className="btn-primary post-new-btn">
@@ -382,7 +394,7 @@ const Profile = () => {
                             </div>
                         ) : (
                             <div className="empty-tab-box glass-card">
-                                <ShoppingBag size={48} className="empty-icon-cyan" />
+                                <ShoppingBag size={44} className="empty-icon-cyan" />
                                 <h3>No purchased courses found</h3>
                                 <p>You have not enrolled in any training modules or architectural bundles yet.</p>
                                 <Link to="/courses" className="btn-primary mt-2">

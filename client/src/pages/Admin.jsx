@@ -7,7 +7,7 @@ import {
     Check, Trash2, Clock, ShieldCheck, Edit, ExternalLink, Users, 
     FileText, Mail, Phone, Calendar, Plus, X, Save, Sparkles, 
     LayoutDashboard, CheckCircle2, AlertTriangle, Shield, UserCheck,
-    GraduationCap, MessageSquare, ArrowRight, BookOpen, Layers
+    GraduationCap, MessageSquare, ArrowRight, BookOpen, Layers, RefreshCw
 } from 'lucide-react';
 import './Admin.css';
 
@@ -93,7 +93,7 @@ const Admin = () => {
                 body: JSON.stringify({ status: newStatus })
             });
             if (response.ok) {
-                setEnquiries(enquiries.map(enq => enq.id === id || enq._id === id ? { ...enq, status: newStatus } : enq));
+                setEnquiries(enquiries.map(enq => (enq.id === id || enq._id === id ? { ...enq, status: newStatus } : enq)));
             }
         } catch (error) {
             console.error('Error updating enquiry status:', error);
@@ -196,15 +196,24 @@ const Admin = () => {
 
     return (
         <div className="admin-container animate-fade-in">
+            {/* Ambient Lighting Mesh (Consistent with Anant Portfolio) */}
+            <div className="admin-ambient-mesh">
+                <div className="admin-orb admin-orb-orange"></div>
+                <div className="admin-orb admin-orb-emerald"></div>
+                <div className="admin-grid-overlay"></div>
+            </div>
+
             {/* Page Header */}
             <header className="admin-page-header">
-                <div className="badge-pill">
-                    <Shield size={14} /> Chaudhary &amp; Sons Admin Portal
+                <div className="admin-status-pill">
+                    <span className="admin-live-dot"></span>
+                    <Shield size={13} />
+                    <span>CHAUDHARY &amp; SONS ADMIN HUB</span>
                 </div>
-                <h1 className="page-title">
+                <h1 className="admin-hero-title">
                     Manage <span className="text-gradient-primary">Dashboard</span>
                 </h1>
-                <p className="page-subtitle">
+                <p className="admin-hero-sub">
                     Oversee technical publications, manage live course enquiries, and administer user privileges.
                 </p>
             </header>
@@ -213,7 +222,7 @@ const Admin = () => {
             <div className="admin-analytics-grid">
                 <div className="analytics-stat-card glass-card">
                     <div className="stat-icon-wrap amber">
-                        <Clock size={22} />
+                        <Clock size={20} />
                     </div>
                     <div className="stat-text">
                         <span className="stat-number">{pendingArticles.length}</span>
@@ -223,7 +232,7 @@ const Admin = () => {
 
                 <div className="analytics-stat-card glass-card">
                     <div className="stat-icon-wrap emerald">
-                        <ShieldCheck size={22} />
+                        <ShieldCheck size={20} />
                     </div>
                     <div className="stat-text">
                         <span className="stat-number">{approvedArticles.length}</span>
@@ -233,59 +242,67 @@ const Admin = () => {
 
                 <div className="analytics-stat-card glass-card">
                     <div className="stat-icon-wrap sunset">
-                        <GraduationCap size={22} />
+                        <GraduationCap size={20} />
                     </div>
                     <div className="stat-text">
                         <span className="stat-number">{enquiries.length}</span>
-                        <span className="stat-title">Course Enquiries ({newEnquiries.length} New)</span>
+                        <span className="stat-title">Leads ({newEnquiries.length} New)</span>
                     </div>
                 </div>
 
                 <div className="analytics-stat-card glass-card">
                     <div className="stat-icon-wrap cyan">
-                        <Users size={22} />
+                        <Users size={20} />
                     </div>
                     <div className="stat-text">
                         <span className="stat-number">{users.length > 0 ? users.length : 'Active'}</span>
-                        <span className="stat-title">Registered Accounts</span>
+                        <span className="stat-title">Registered Users</span>
                     </div>
                 </div>
             </div>
 
-            {/* Segmented Tab Navigation */}
-            <div className="admin-segmented-tabs glass">
-                <button
-                    className={`seg-tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('articles')}
-                >
-                    <FileText size={17} />
-                    <span>Articles Moderation ({pendingArticles.length + approvedArticles.length})</span>
-                </button>
-                <button
-                    className={`seg-tab-btn ${activeTab === 'enquiries' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('enquiries')}
-                >
-                    <GraduationCap size={17} />
-                    <span>Course Enquiries ({enquiries.length})</span>
-                    {newEnquiries.length > 0 && <span className="tab-bubble-badge">{newEnquiries.length}</span>}
-                </button>
-                <button
-                    className={`seg-tab-btn ${activeTab === 'users' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('users')}
-                >
-                    <Users size={17} />
-                    <span>User Management ({users.length})</span>
-                </button>
+            {/* Segmented Tab Navigation with Horizontal Swipe Support */}
+            <div className="admin-segmented-tabs-wrap">
+                <div className="admin-segmented-tabs glass">
+                    <button
+                        className={`seg-tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('articles')}
+                    >
+                        <FileText size={16} />
+                        <span className="tab-label-full">Articles Moderation</span>
+                        <span className="tab-label-short">Articles</span>
+                        <span className="tab-count-pill">{pendingArticles.length + approvedArticles.length}</span>
+                    </button>
+                    <button
+                        className={`seg-tab-btn ${activeTab === 'enquiries' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('enquiries')}
+                    >
+                        <GraduationCap size={16} />
+                        <span className="tab-label-full">Course Enquiries</span>
+                        <span className="tab-label-short">Enquiries</span>
+                        <span className="tab-count-pill">{enquiries.length}</span>
+                        {newEnquiries.length > 0 && <span className="tab-bubble-badge">{newEnquiries.length} new</span>}
+                    </button>
+                    <button
+                        className={`seg-tab-btn ${activeTab === 'users' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('users')}
+                    >
+                        <Users size={16} />
+                        <span className="tab-label-full">User Directory</span>
+                        <span className="tab-label-short">Users</span>
+                        <span className="tab-count-pill">{users.length}</span>
+                    </button>
+                </div>
             </div>
 
             {/* TAB 1: ARTICLES MANAGEMENT */}
             {activeTab === 'articles' && (
-                <div className="admin-tab-content">
+                <div className="admin-tab-content animate-fade-in">
                     {/* Pending Section */}
                     <div className="admin-mod-section">
                         <div className="mod-section-header">
                             <div className="section-title-wrap">
-                                <Clock size={20} className="section-icon-amber" />
+                                <Clock size={18} className="section-icon-amber" />
                                 <h2>Pending Approvals ({pendingArticles.length})</h2>
                             </div>
                         </div>
@@ -298,15 +315,20 @@ const Admin = () => {
                                 </div>
                             ) : (
                                 pendingArticles.map(article => (
-                                    <div key={article.id || article._id} className="mod-item-card glass-card">
+                                    <div key={article.id || article._id} className="mod-item-card glass-card pending-card">
                                         <div className="mod-info-col">
                                             <div className="mod-meta-badges">
-                                                <span className="badge-pill amber">Pending</span>
+                                                <span className="badge-pill amber">
+                                                    <Clock size={11} /> Pending
+                                                </span>
                                                 <span className="badge-pill cyan">{article.category}</span>
+                                                <span className="mod-date-pill">
+                                                    <Calendar size={11} /> {article.date || 'Recent'}
+                                                </span>
                                             </div>
                                             <h3 className="mod-item-title">{article.title}</h3>
                                             <p className="mod-item-sub">
-                                                By <strong>{article.author}</strong> • Submitted on {article.date || 'Recent'}
+                                                By <strong>{article.author}</strong>
                                             </p>
                                             {article.excerpt && (
                                                 <p className="mod-item-excerpt">{article.excerpt}</p>
@@ -319,23 +341,27 @@ const Admin = () => {
                                                 onClick={() => approveArticle(article.id || article._id)}
                                                 title="Approve & Publish"
                                             >
-                                                <Check size={18} />
+                                                <Check size={16} />
                                                 <span>Approve</span>
                                             </button>
-                                            <Link
-                                                to={`/admin/edit/${article.id || article._id}`}
-                                                className="action-icon-btn edit"
-                                                title="Edit Content"
-                                            >
-                                                <Edit size={18} />
-                                            </Link>
-                                            <button
-                                                className="action-icon-btn delete"
-                                                onClick={() => deleteArticle(article.id || article._id)}
-                                                title="Reject / Delete"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                            <div className="action-sub-buttons">
+                                                <Link
+                                                    to={`/admin/edit/${article.id || article._id}`}
+                                                    className="action-icon-btn edit"
+                                                    title="Edit Content"
+                                                >
+                                                    <Edit size={16} />
+                                                    <span className="btn-text-mobile">Edit</span>
+                                                </Link>
+                                                <button
+                                                    className="action-icon-btn delete"
+                                                    onClick={() => deleteArticle(article.id || article._id)}
+                                                    title="Reject / Delete"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    <span className="btn-text-mobile">Delete</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))
@@ -344,10 +370,10 @@ const Admin = () => {
                     </div>
 
                     {/* Published Section */}
-                    <div className="admin-mod-section" style={{ marginTop: '4rem' }}>
+                    <div className="admin-mod-section published-section-wrap">
                         <div className="mod-section-header">
                             <div className="section-title-wrap">
-                                <ShieldCheck size={20} className="section-icon-emerald" />
+                                <ShieldCheck size={18} className="section-icon-emerald" />
                                 <h2>Published &amp; Live Articles ({approvedArticles.length})</h2>
                             </div>
                         </div>
@@ -362,12 +388,17 @@ const Admin = () => {
                                     <div key={article.id || article._id} className="mod-item-card glass-card">
                                         <div className="mod-info-col">
                                             <div className="mod-meta-badges">
-                                                <span className="badge-pill emerald">Published</span>
+                                                <span className="badge-pill emerald">
+                                                    <CheckCircle2 size={11} /> Published
+                                                </span>
                                                 <span className="badge-pill cyan">{article.category}</span>
+                                                <span className="mod-date-pill">
+                                                    <Calendar size={11} /> {article.date || 'Recent'}
+                                                </span>
                                             </div>
                                             <h3 className="mod-item-title">{article.title}</h3>
                                             <p className="mod-item-sub">
-                                                By <strong>{article.author}</strong> • {article.date || 'Recent'}
+                                                By <strong>{article.author}</strong>
                                             </p>
                                         </div>
 
@@ -377,22 +408,27 @@ const Admin = () => {
                                                 className="action-icon-btn view"
                                                 title="View Live Article"
                                             >
-                                                <ExternalLink size={18} />
+                                                <ExternalLink size={16} />
+                                                <span>View Live</span>
                                             </Link>
-                                            <Link
-                                                to={`/admin/edit/${article.id || article._id}`}
-                                                className="action-icon-btn edit"
-                                                title="Edit Content"
-                                            >
-                                                <Edit size={18} />
-                                            </Link>
-                                            <button
-                                                className="action-icon-btn delete"
-                                                onClick={() => deleteArticle(article.id || article._id)}
-                                                title="Delete Article"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                            <div className="action-sub-buttons">
+                                                <Link
+                                                    to={`/admin/edit/${article.id || article._id}`}
+                                                    className="action-icon-btn edit"
+                                                    title="Edit Content"
+                                                >
+                                                    <Edit size={16} />
+                                                    <span className="btn-text-mobile">Edit</span>
+                                                </Link>
+                                                <button
+                                                    className="action-icon-btn delete"
+                                                    onClick={() => deleteArticle(article.id || article._id)}
+                                                    title="Delete Article"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    <span className="btn-text-mobile">Delete</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))
@@ -405,13 +441,14 @@ const Admin = () => {
             {/* TAB 2: COURSE ENQUIRIES & LEADS */}
             {activeTab === 'enquiries' && (
                 <div className="admin-tab-content animate-fade-in">
-                    <div className="mod-section-header">
+                    <div className="mod-section-header enquiry-head-flex">
                         <div className="section-title-wrap">
-                            <GraduationCap size={20} className="section-icon-sunset" />
-                            <h2>ChaudharyConnect Enquiries &amp; Leads ({enquiries.length})</h2>
+                            <GraduationCap size={18} className="section-icon-sunset" />
+                            <h2>ChaudharyConnect Leads ({enquiries.length})</h2>
                         </div>
-                        <button className="btn-secondary" onClick={fetchEnquiries}>
-                            Refresh Leads
+                        <button className="btn-secondary refresh-btn-mobile" onClick={fetchEnquiries} disabled={loadingEnquiries}>
+                            <RefreshCw size={14} className={loadingEnquiries ? 'animate-spin' : ''} />
+                            <span>{loadingEnquiries ? 'Refreshing...' : 'Refresh Leads'}</span>
                         </button>
                     </div>
 
@@ -438,12 +475,12 @@ const Admin = () => {
                                                 </span>
                                                 <span className="badge-pill cyan">{enq.itemType?.toUpperCase() || 'MODULE'}</span>
                                                 <span className="enquiry-date-pill">
-                                                    <Calendar size={12} />
-                                                    {enq.createdAt ? new Date(enq.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent'}
+                                                    <Calendar size={11} />
+                                                    {enq.createdAt ? new Date(enq.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}
                                                 </span>
                                             </div>
 
-                                            <h3 className="mod-item-title">{enq.selectedItem}</h3>
+                                            <h3 className="mod-item-title enquiry-course-name">{enq.selectedItem}</h3>
                                             
                                             <div className="enquiry-lead-info">
                                                 <span className="lead-name"><strong>{enq.name}</strong></span>
@@ -482,14 +519,16 @@ const Admin = () => {
 
                                             <div className="enquiry-direct-buttons">
                                                 <a href={`mailto:${enq.email}?subject=ChaudharyConnect%20Course%20Details`} className="action-icon-btn email-btn" title="Email Student">
-                                                    <Mail size={16} />
+                                                    <Mail size={15} />
+                                                    <span className="btn-text-mobile">Email</span>
                                                 </a>
                                                 <button
                                                     className="action-icon-btn delete"
                                                     onClick={() => handleDeleteEnquiry(enqId)}
                                                     title="Delete Enquiry"
                                                 >
-                                                    <Trash2 size={16} />
+                                                    <Trash2 size={15} />
+                                                    <span className="btn-text-mobile">Delete</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -503,14 +542,15 @@ const Admin = () => {
 
             {/* TAB 3: USERS MANAGEMENT */}
             {activeTab === 'users' && (
-                <div className="admin-tab-content">
+                <div className="admin-tab-content animate-fade-in">
                     <div className="mod-section-header user-header-flex">
                         <div className="section-title-wrap">
-                            <Users size={20} className="section-icon-cyan" />
-                            <h2>User Directory</h2>
+                            <Users size={18} className="section-icon-cyan" />
+                            <h2>User Directory ({users.length})</h2>
                         </div>
                         <button className="btn-primary add-user-trigger" onClick={() => handleOpenModal()}>
-                            <Plus size={16} /> Add New User
+                            <Plus size={16} />
+                            <span>Add New User</span>
                         </button>
                     </div>
 
@@ -529,16 +569,23 @@ const Admin = () => {
                                 <div key={u._id} className="mod-item-card glass-card user-item-card">
                                     <div className="mod-info-col">
                                         <div className="user-primary-row">
-                                            <h3 className="user-card-name">{u.firstName} {u.lastName}</h3>
-                                            <span className={`role-chip ${u.role === 'admin' ? 'admin' : 'user'}`}>
-                                                {u.role === 'admin' ? <Shield size={12} /> : <UserCheck size={12} />}
-                                                {u.role}
-                                            </span>
-                                            {u.isVerified && (
-                                                <span className="badge-pill emerald">
-                                                    <CheckCircle2 size={11} /> Verified
-                                                </span>
-                                            )}
+                                            <div className="user-avatar-mini">
+                                                {(u.firstName?.[0] || u.username?.[0] || 'U').toUpperCase()}
+                                            </div>
+                                            <div className="user-title-wrap">
+                                                <h3 className="user-card-name">{u.firstName} {u.lastName}</h3>
+                                                <div className="user-chips-row">
+                                                    <span className={`role-chip ${u.role === 'admin' ? 'admin' : 'user'}`}>
+                                                        {u.role === 'admin' ? <Shield size={11} /> : <UserCheck size={11} />}
+                                                        {u.role}
+                                                    </span>
+                                                    {u.isVerified && (
+                                                        <span className="badge-pill emerald">
+                                                            <CheckCircle2 size={11} /> Verified
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="user-meta-details">
                                             <span className="user-detail-item">
@@ -559,19 +606,21 @@ const Admin = () => {
 
                                     <div className="mod-actions-col">
                                         <button
-                                            className="action-icon-btn edit"
+                                            className="action-icon-btn edit user-edit-btn"
                                             onClick={() => handleOpenModal(u)}
                                             title="Edit User"
                                         >
-                                            <Edit size={18} />
+                                            <Edit size={16} />
+                                            <span>Edit</span>
                                         </button>
                                         {u.role !== 'admin' && (
                                             <button
-                                                className="action-icon-btn delete"
+                                                className="action-icon-btn delete user-delete-btn"
                                                 onClick={() => handleDeleteUser(u._id)}
                                                 title="Delete User"
                                             >
-                                                <Trash2 size={18} />
+                                                <Trash2 size={16} />
+                                                <span>Delete</span>
                                             </button>
                                         )}
                                     </div>
@@ -584,11 +633,11 @@ const Admin = () => {
 
             {/* Create/Edit User Modal Dialog */}
             {showUserModal && (
-                <div className="modal-backdrop-blur animate-fade-in">
-                    <div className="modal-glass-card glass-card">
+                <div className="modal-backdrop-blur animate-fade-in" onClick={handleCloseModal}>
+                    <div className="modal-glass-card glass-card" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-head">
                             <h2>{editingUser ? 'Edit User Credentials' : 'Create Team Member'}</h2>
-                            <button className="modal-close-icon" onClick={handleCloseModal}>
+                            <button className="modal-close-icon" onClick={handleCloseModal} aria-label="Close modal">
                                 <X size={20} />
                             </button>
                         </div>
@@ -640,7 +689,7 @@ const Admin = () => {
                                         type="tel"
                                         value={userFormData.phone}
                                         onChange={(e) => setUserFormData({ ...userFormData, phone: e.target.value })}
-                                        placeholder="+1 234 567 890"
+                                        placeholder="+91 98765 43210"
                                     />
                                 </div>
                                 <div className="modal-field">
@@ -670,7 +719,8 @@ const Admin = () => {
                                     Cancel
                                 </button>
                                 <button type="submit" className="btn-primary">
-                                    <Save size={16} /> {editingUser ? 'Update User' : 'Create User'}
+                                    <Save size={16} />
+                                    <span>{editingUser ? 'Update User' : 'Create User'}</span>
                                 </button>
                             </div>
                         </form>

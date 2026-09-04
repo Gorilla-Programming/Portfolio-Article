@@ -146,9 +146,34 @@ const Docs = () => {
         html: '<p>Select a guide from the sidebar.</p>'
     };
 
-    // Handle code copying inside rendered HTML
+    // Expose navigateToHash on window for inline HTML onclick handlers
+    useEffect(() => {
+        window.navigateToHash = (hash) => {
+            handleSelectPage(hash);
+        };
+        return () => {
+            delete window.navigateToHash;
+        };
+    }, []);
+
+    // Handle code copying and card clicks inside rendered HTML
     useEffect(() => {
         const handleGlobalClick = (e) => {
+            // Handle portal card clicks
+            const card = e.target.closest('.portal-card');
+            if (card) {
+                const onclickAttr = card.getAttribute('onclick');
+                if (onclickAttr) {
+                    const match = onclickAttr.match(/navigateToHash\(['"]([^'"]+)['"]\)/);
+                    if (match && match[1]) {
+                        e.preventDefault();
+                        handleSelectPage(match[1]);
+                        return;
+                    }
+                }
+            }
+
+            // Handle code copy button
             const btn = e.target.closest('.btn-copy');
             if (btn) {
                 const codeBlock = btn.closest('.ibm-code-block');

@@ -317,6 +317,14 @@
     color: #27272a;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     transition: all 0.2s ease;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ap-info-chip span {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    min-width: 0;
 }
 
 .ap-info-chip.interactive {
@@ -342,6 +350,7 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(234, 88, 12, 0.4);
 }
+
 
 /* 4 Metrics Grid */
 .ap-metrics-grid {
@@ -852,19 +861,26 @@
     background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
     border: 1px solid #fed7aa;
     border-radius: 28px;
-    padding: clamp(32px, 5vw, 48px);
+    padding: clamp(24px, 4vw, 48px);
     box-shadow: 0 16px 45px rgba(249, 115, 22, 0.1);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: clamp(24px, 4vw, 40px);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.ap-contact-left {
+    min-width: 0;
 }
 
 .ap-contact-left h2 {
-    font-size: clamp(1.8rem, 3vw, 2.3rem);
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
     font-weight: 950;
     color: #09090b;
     letter-spacing: -0.02em;
     margin: 12px 0 10px 0;
+    line-height: 1.2;
 }
 
 .ap-contact-left p {
@@ -879,6 +895,7 @@
     flex-direction: column;
     gap: 12px;
     margin-bottom: 24px;
+    width: 100%;
 }
 
 .ap-contact-box {
@@ -890,11 +907,19 @@
     background: #ffffff;
     border: 1px solid #e4e4e7;
     transition: all 0.2s ease;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .ap-contact-box:hover {
     border-color: #ea580c;
     box-shadow: 0 4px 14px rgba(234, 88, 12, 0.08);
+}
+
+.ap-contact-box > div {
+    min-width: 0;
+    flex: 1;
 }
 
 .ap-contact-box small {
@@ -903,11 +928,15 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     color: #71717a;
+    margin-bottom: 2px;
 }
 
 .ap-contact-box strong {
     font-size: 0.92rem;
     color: #09090b;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    display: block;
 }
 
 .ap-copy-btn {
@@ -919,6 +948,7 @@
     cursor: pointer;
     color: #52525b;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .ap-copy-btn:hover {
@@ -930,6 +960,7 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .ap-eco-btn {
@@ -945,6 +976,8 @@
     color: #ea580c;
     text-decoration: none;
     transition: all 0.2s ease;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .ap-eco-btn:hover {
@@ -960,14 +993,17 @@
     background: #ffffff;
     border: 1px solid #e4e4e7;
     border-radius: 20px;
-    padding: 24px;
+    padding: clamp(18px, 3vw, 24px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .ap-form-field {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
 }
 
 .ap-form-field label {
@@ -987,6 +1023,8 @@
     outline: none;
     font-family: inherit;
     transition: all 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .ap-form-field input:focus,
@@ -1012,6 +1050,8 @@
     box-shadow: 0 4px 18px rgba(249, 115, 22, 0.3);
     transition: all 0.25s ease;
     margin-top: 6px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .ap-submit-btn:hover {
@@ -1028,7 +1068,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   RESPONSIVENESS
+   COMPREHENSIVE MOBILE-FIRST RESPONSIVE DESIGN (< 1024px, < 768px, < 480px)
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
     .ap-metrics-grid {
@@ -1049,7 +1089,17 @@
     }
 
     .ap-hero-section {
-        padding: 2rem 0 3.5rem 0;
+        padding: 1.5rem 0 2.5rem 0;
+    }
+
+    .ap-status-pill {
+        font-size: 0.68rem;
+        padding: 5px 12px;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        max-width: 100%;
     }
 
     .ap-brand-subtitle {
@@ -1063,37 +1113,59 @@
     }
 
     .ap-brand-flank-line {
-        width: 28px;
+        width: 24px;
     }
 
     .ap-hero-title {
-        font-size: clamp(2.4rem, 10vw, 3.8rem);
+        font-size: clamp(2.2rem, 9.5vw, 3.4rem);
+        line-height: 1.05;
+        gap: 0.15em;
     }
 
     .ap-dynamic-typewriter {
-        font-size: 0.86rem;
-        padding: 6px 14px;
+        font-size: 0.84rem;
+        padding: 6px 12px;
         min-height: 42px;
         max-width: 100%;
         text-align: center;
+        justify-content: center;
     }
 
     .ap-hero-lead {
-        font-size: 0.96rem;
-    }
-
-    .ap-metrics-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        font-size: 0.94rem;
+        line-height: 1.6;
     }
 
     .ap-contact-pills-row {
         flex-direction: column;
         width: 100%;
+        gap: 8px;
     }
 
     .ap-info-chip {
+        width: 100%;
         justify-content: center;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .ap-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .ap-metric-card {
+        padding: 1rem 0.8rem;
+    }
+
+    .ap-clients-marquee {
+        gap: 8px;
+    }
+
+    .ap-client-pill {
+        padding: 6px 12px;
+        font-size: 0.78rem;
     }
 
     .ap-exp-tabs-nav {
@@ -1102,6 +1174,8 @@
         -webkit-overflow-scrolling: touch;
         padding-bottom: 8px;
         justify-content: flex-start;
+        gap: 8px;
+        width: 100%;
     }
 
     .ap-exp-tabs-nav::-webkit-scrollbar {
@@ -1110,66 +1184,123 @@
 
     .ap-exp-tab-btn {
         flex-shrink: 0;
-        padding: 8px 16px;
-        font-size: 0.8rem;
+        padding: 8px 14px;
+        font-size: 0.78rem;
     }
 
     .ap-exp-card,
     .ap-skills-col,
     .ap-edu-card,
     .ap-awards-card {
-        padding: 20px 16px;
-        border-radius: 18px;
+        padding: 18px 14px;
+        border-radius: 16px;
     }
 
-    .ap-exp-title {
-        font-size: 1.35rem;
+    .ap-exp-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .ap-exp-dates {
+        font-size: 0.76rem;
+    }
+
+    .ap-skills-grid,
+    .ap-edu-awards-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .ap-contact-card {
-        padding: 24px 16px;
-        border-radius: 20px;
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 20px 14px;
+        border-radius: 18px;
+    }
+
+    .ap-contact-left h2 {
+        font-size: 1.5rem;
+    }
+
+    .ap-contact-methods {
+        gap: 10px;
+    }
+
+    .ap-contact-box {
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .ap-contact-box strong {
+        font-size: 0.88rem;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+    }
+
+    .ap-ecosystem-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .ap-eco-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ap-contact-form {
+        padding: 16px 12px;
+        border-radius: 16px;
     }
 }
 
 @media (max-width: 480px) {
     .ap-master-container {
-        padding-top: 74px;
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-top: 72px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     .ap-status-pill {
-        font-size: 0.65rem;
-        padding: 5px 12px;
+        font-size: 0.62rem;
+        padding: 4px 10px;
     }
 
     .ap-brand-title-text {
-        font-size: 1rem;
-        letter-spacing: 0.1em;
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
     }
 
     .ap-brand-flank-line {
-        width: 18px;
+        width: 16px;
     }
 
     .ap-hero-title {
-        font-size: clamp(2rem, 10vw, 3rem);
+        font-size: clamp(1.9rem, 9.5vw, 2.7rem);
     }
 
     .ap-dynamic-typewriter {
-        font-size: 0.78rem;
-        padding: 5px 10px;
+        font-size: 0.75rem;
+        padding: 5px 8px;
     }
 
     .ap-section-heading {
-        font-size: clamp(1.6rem, 7vw, 2.1rem);
+        font-size: clamp(1.45rem, 6.5vw, 1.9rem);
+    }
+
+    .ap-section-sub {
+        font-size: 0.88rem;
     }
 
     .ap-exp-card,
     .ap-skills-col,
     .ap-edu-card,
     .ap-awards-card {
-        padding: 16px 12px;
+        padding: 14px 10px;
+    }
+
+    .ap-contact-box strong {
+        font-size: 0.82rem;
     }
 }
+

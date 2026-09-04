@@ -759,11 +759,19 @@
     border: 1px solid #e4e4e7;
     position: relative;
     transition: all 0.2s ease;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .cs-contact-item:hover {
     border-color: #fed7aa;
     box-shadow: 0 4px 15px rgba(249, 115, 22, 0.08);
+}
+
+.cs-contact-item > div {
+    min-width: 0;
+    flex: 1;
 }
 
 .cs-contact-item small {
@@ -772,11 +780,15 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     color: #71717a;
+    margin-bottom: 2px;
 }
 
 .cs-contact-item strong {
     font-size: 0.92rem;
     color: #09090b;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    display: block;
 }
 
 .cs-copy-btn {
@@ -788,6 +800,7 @@
     cursor: pointer;
     color: #52525b;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .cs-copy-btn:hover {
@@ -802,8 +815,10 @@
     background: #ffffff;
     border: 1px solid #e4e4e7;
     border-radius: 20px;
-    padding: 24px;
+    padding: clamp(18px, 3vw, 24px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .cs-form-row {
@@ -816,6 +831,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
 }
 
 .cs-form-field label {
@@ -835,6 +851,8 @@
     outline: none;
     font-family: inherit;
     transition: all 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .cs-form-field input:focus,
@@ -860,6 +878,8 @@
     box-shadow: 0 4px 18px rgba(249, 115, 22, 0.3);
     transition: all 0.25s ease;
     margin-top: 6px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .cs-submit-btn:hover {
@@ -876,7 +896,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   RESPONSIVENESS
+   COMPREHENSIVE MOBILE-FIRST RESPONSIVE DESIGN (< 1024px, < 768px, < 480px)
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
     .cs-platforms-grid,
@@ -898,40 +918,78 @@
     }
 
     .cs-hero-section {
-        padding: 2rem 0 3.5rem 0;
+        padding: 1.5rem 0 2.5rem 0;
+    }
+
+    .cs-status-pill {
+        font-size: 0.68rem;
+        padding: 5px 12px;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        max-width: 100%;
     }
 
     .cs-hero-title {
-        font-size: clamp(2.4rem, 10vw, 3.8rem);
+        font-size: clamp(2.2rem, 9.5vw, 3.4rem);
+        line-height: 1.05;
+        word-break: break-word;
     }
 
     .cs-dynamic-typewriter {
-        font-size: 0.86rem;
-        padding: 6px 14px;
+        font-size: 0.84rem;
+        padding: 6px 12px;
         min-height: 42px;
         max-width: 100%;
         text-align: center;
+        justify-content: center;
     }
 
     .cs-hero-subtitle {
-        font-size: 0.96rem;
+        font-size: 0.94rem;
+        line-height: 1.6;
+    }
+
+    .cs-hero-cta-cluster {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .cs-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 18px;
+        font-size: 0.88rem;
     }
 
     .cs-trust-strip {
+        flex-direction: column;
+        width: 100%;
         gap: 8px;
     }
 
     .cs-trust-item {
         font-size: 0.78rem;
-        padding: 5px 10px;
+        padding: 6px 12px;
         width: 100%;
         justify-content: center;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .cs-platforms-grid,
+    .cs-leadership-grid,
+    .cs-values-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .cs-platform-card,
     .cs-leader-card,
     .cs-val-card {
-        padding: 20px 16px;
+        padding: 18px 14px;
         border-radius: 18px;
     }
 
@@ -940,55 +998,81 @@
         font-size: 1.25rem;
     }
 
+    .cs-leader-header {
+        gap: 12px;
+    }
+
+    .cs-leader-avatar-box {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+    }
+
     .cs-contact-card {
-        padding: 24px 16px;
-        border-radius: 20px;
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 20px 14px;
+        border-radius: 18px;
+    }
+
+    .cs-contact-item {
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .cs-contact-item strong {
+        font-size: 0.88rem;
     }
 
     .cs-form-row {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
 
-    .cs-hero-cta-cluster {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .cs-btn {
-        width: 100%;
-        justify-content: center;
+    .cs-contact-form {
+        padding: 16px 12px;
+        border-radius: 16px;
     }
 }
 
 @media (max-width: 480px) {
     .cs-master-container {
-        padding-top: 74px;
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-top: 72px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     .cs-status-pill {
-        font-size: 0.65rem;
-        padding: 5px 12px;
-        letter-spacing: 0.05em;
+        font-size: 0.62rem;
+        padding: 4px 10px;
+        letter-spacing: 0.04em;
     }
 
     .cs-hero-title {
-        font-size: clamp(2rem, 10vw, 3rem);
+        font-size: clamp(1.9rem, 9.5vw, 2.7rem);
     }
 
     .cs-dynamic-typewriter {
-        font-size: 0.78rem;
-        padding: 5px 10px;
+        font-size: 0.75rem;
+        padding: 5px 8px;
     }
 
     .cs-section-heading {
-        font-size: clamp(1.6rem, 7vw, 2.1rem);
+        font-size: clamp(1.45rem, 6.5vw, 1.9rem);
+    }
+
+    .cs-section-subheading {
+        font-size: 0.88rem;
     }
 
     .cs-platform-card,
     .cs-leader-card,
     .cs-val-card {
-        padding: 16px 12px;
+        padding: 14px 10px;
+    }
+
+    .cs-contact-item strong {
+        font-size: 0.82rem;
     }
 }
+

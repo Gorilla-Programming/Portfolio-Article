@@ -108,7 +108,11 @@
     align-items: center;
     gap: 0.5rem;
     transition: var(--transition);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    max-width: 100%;
 }
+
 
 .contact-link:hover {
     color: var(--primary-light);

@@ -1611,7 +1611,16 @@
 .portal-btn {
     padding: 16px 32px;
     font-size: 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
 }
+
+.portal-btn span {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+
 
 .portal-meta-strip {
     display: flex;
